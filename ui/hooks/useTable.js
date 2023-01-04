@@ -3,7 +3,8 @@ import { useState } from 'react';
 // ----------------------------------------------------------------------
 
 export default function useTable(props) {
-  const [dense, setDense] = useState(props?.defaultDense || false);
+  const [dense, setDense] = useState(true);
+  // const [dense, setDense] = useState(props?.defaultDense || false);
 
   const [orderBy, setOrderBy] = useState(props?.defaultOrderBy || 'name');
 
@@ -11,7 +12,7 @@ export default function useTable(props) {
 
   const [page, setPage] = useState(props?.defaultCurrentPage || 0);
 
-  const [rowsPerPage, setRowsPerPage] = useState(props?.defaultRowsPerPage || 5);
+  const [rowsPerPage, setRowsPerPage] = useState(props?.defaultRowsPerPage || 25);
 
   const [selected, setSelected] = useState(props?.defaultSelected || []);
 

@@ -7,7 +7,7 @@ query sessions {
     description
     startTime
     endTime
-    associatedTables
+    # associatedTables
     updatedAt
     createdAt
   }

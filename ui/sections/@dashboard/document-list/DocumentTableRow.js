@@ -11,7 +11,7 @@ import Iconify from '../../../components/Iconify';
 import ConfirmDialog from '../../../components/ConfirmDialog';
 
 // utils
-import { fDate } from '../../../utils/formatTime';
+import { fDate, fTime } from '../../../utils/formatTime';
 
 // ----------------------------------------------------------------------
 
@@ -23,7 +23,7 @@ DocumentTableRow.propTypes = {
 };
 
 export default function DocumentTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
-  const { title, isPublic, cover, createdAt } = row;
+  const { title, startTime, endTime, cover, createdAt } = row;
 
   const mockImageUrl = '/assets/document.jpg';
 
@@ -70,8 +70,13 @@ export default function DocumentTableRow({ row, selected, onEditRow, onSelectRow
         </Typography>
       </TableCell>
       <TableCell align="left">
-        <Label variant="ghost" color={isPublic ? 'secondary' : 'primary'}>
-          {sentenceCase(isPublic ? 'Public' : 'Private')}
+        <Label variant="ghost" color="primary">
+          {fTime(startTime || null)}
+        </Label>
+      </TableCell>
+      <TableCell align="left">
+        <Label variant="ghost" color="primary">
+          {fTime(endTime || null)}
         </Label>
       </TableCell>
       <TableCell align="left">{fDate(new Date(createdAt))}</TableCell>

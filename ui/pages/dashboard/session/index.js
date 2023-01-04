@@ -33,6 +33,8 @@ export default function Session() {
 
   const sessions = (data && data.sessions) || [];
 
+  console.log('Sessions', sessions);
+
   const deleteSession = (_id) => {
     const deleteSes = sessions.find((ses) => ses._id === _id);
     const public_id = deleteSes && deleteSes.cover && deleteSes.cover.public_id;
