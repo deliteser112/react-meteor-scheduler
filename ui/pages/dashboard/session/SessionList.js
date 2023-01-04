@@ -38,7 +38,8 @@ import { DocumentTableRow, DocumentTableToolbar } from '../../../sections/@dashb
 
 const TABLE_HEAD = [
   { id: 'title', label: 'Title', alignRight: false },
-  { id: 'isPublic', label: 'Document Type', alignRight: false },
+  { id: 'startTime', label: 'Start Time', alignRight: false },
+  { id: 'endTime', label: 'End Time', alignRight: false },
   { id: 'createdAt', label: 'Created At', alignRight: false },
   { id: '' }
 ];
@@ -96,7 +97,7 @@ export default function SessionList({ sessionList, isLoading, onDelete }) {
   };
 
   const handleEditRow = (id) => {
-    navigate(PATH_DASHBOARD.document.edit(id));
+    navigate(PATH_DASHBOARD.session.edit(id));
   };
 
   const dataFiltered = applySortFilter({

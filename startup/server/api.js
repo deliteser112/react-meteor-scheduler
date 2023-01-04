@@ -17,6 +17,11 @@ import CommentTypes from '../../api/Comments/types';
 import CommentQueries from '../../api/Comments/queries';
 import CommentMutations from '../../api/Comments/mutations';
 
+// session
+import SessionTypes from '../../api/Sessions/types';
+import SessionQueries from '../../api/Sessions/queries';
+import SessionMutations from '../../api/Sessions/mutations';
+
 import OAuthQueries from '../../api/OAuth/queries';
 
 import '../../api/Documents/server/indexes';
@@ -29,14 +34,25 @@ import '../../api/Users/methods';
 
 const schema = {
   typeDefs: gql`
-    ${UserTypes}
     ${DocumentTypes}
     ${CommentTypes}
+
+    # scheduler inputs
+    ${SessionTypes}
+
+    # user management
+    ${UserTypes}
     ${UserSettingsTypes}
 
     type Query {
       documents: [Document]
       document(_id: String): Document
+
+      # scheduler queries
+      sessions: [Session]
+      session(_id: String): Session
+
+      # user management
       user(_id: String): User
       users(currentPage: Int, perPage: Int, search: String): Users
       userSettings: [UserSetting]
@@ -50,6 +66,13 @@ const schema = {
       removeDocument(_id: String!): Document
       addComment(documentId: String!, comment: String!): Comment
       removeComment(commentId: String!): Comment
+
+      # scheduler mutations
+      addSession(title: String, description: String, startTime: String, endTime: String): Session
+      updateSession(_id: String!, title: String, description: String, startTime: String, endTime: String): Session
+      removeSession(_id: String!): Session
+
+      # user management
       updateUser(user: UserInput): User
       removeUser(_id: String): User
       addUserSetting(setting: UserSettingInput): UserSetting
@@ -66,6 +89,11 @@ const schema = {
   resolvers: {
     Query: {
       ...DocumentQueries,
+
+      // scheduler inputs
+      ...SessionQueries,
+
+      // user management
       ...UserQueries,
       ...UserSettingsQueries,
       ...OAuthQueries,
@@ -73,6 +101,11 @@ const schema = {
     Mutation: {
       ...DocumentMutations,
       ...CommentMutations,
+
+      // scheduler actions
+      ...SessionMutations,
+
+      // user management
       ...UserMutations,
       ...UserSettingsMutations,
     },

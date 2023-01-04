@@ -4,7 +4,6 @@ fragment SessionAttributes on Session {
 	description
 	startTime
 	endTime
-	associatedTables
 	updatedAt
 	createdAt
 }

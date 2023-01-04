@@ -97,8 +97,25 @@ export default function SessionNewEditForm({ isEdit, currentSession }) {
 
   const onSubmit = async (values) => {
     try {
-      console.log(values);
-      const { description, startTime, endTime, title } = values;
+      // const time = new Date(endTime.toString()).getHours();
+      // const min = new Date(endTime.toString()).getMinutes();
+      // console.log(endTime, time, min);
+
+      const { description, title } = values;
+
+      if (!startTime || !endTime) {
+        enqueueSnackbar('Incorrect inputs!', {
+          variant: 'error',
+          autoHideDuration: 2500,
+          action: (key) => (
+            <IconButton size="small" onClick={() => closeSnackbar(key)}>
+              <Iconify icon="eva:close-outline" />
+            </IconButton>
+          )
+        });
+
+        return;
+      }
 
       const mutation = isEdit ? updateSession : addSession;
       const sessionToAddOrUpdate = {
