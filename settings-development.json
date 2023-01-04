@@ -1,0 +1,43 @@
+{
+  "public": {
+    "graphQL": {
+      "httpUri": "http://localhost:3000/graphql"
+    },
+    "services": ["google", "github", "facebook"],
+    "productName": "Product Name",
+    "copyrightStartYear": "2022",
+    "twitterUsername": "product",
+    "facebookUsername": "product",
+    "productAddress": "13 Forester Way Pakenham VIC 3810, Australia"
+  },
+  "private": {
+    "MAIL_URL": "smtps://4165cf816743c426a58ec2e5d1577682:741164e84c9232a7d59ddfe5d536bc93@in-v3.mailjet.com:465",
+    "OAuth": {
+      "facebook": {
+        "enabled": true,
+        "appId": "659338544563358",
+        "secret": "0ae03b99e776077445546fad57a15742",
+        "loginStyle": "popup"
+      },
+      "google": {
+        "enabled": true,
+        "clientId": "955722000602-0hl38i48qqhias14f28ppk56t6n29ir0.apps.googleusercontent.com",
+        "secret": "vpUonZKIP2DEYcWBa7Mm0iH2",
+        "loginStyle": "popup"
+      },
+      "github": {
+        "enabled": true,
+        "clientId": "f31b8b8f7d5bd668dbce",
+        "secret": "3fe30c2ce9214d77f879d91c3a91c40ed8ac14e9",
+        "loginStyle": "redirect"
+      }
+    },
+    "cloudinary": {
+      "cloud_name": "deliteser112",
+      "api_key": "169463763492816",
+      "api_secret": "OUTYfegL2nqj2CxYY2csgykbNCs"
+    },
+    "supportEmail": "Customer Support <support@product.com>"
+  }
+}
+
