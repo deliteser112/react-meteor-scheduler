@@ -1,0 +1,31 @@
+mutation addSession($title: String, $description: String, $startTime: String, $endTime: String, $associatedTables: [String]) {
+  addSession(title: $title, description: $description, startTime: $startTime, endTime: $endTime, associatedTables: $associatedTables) {
+    _id
+    title
+    description
+    startTime
+    endTime
+    associatedTables
+    createdAt
+    updatedAt
+  }
+}
+
+mutation updateSession($_id: String!, $title: String, $description: String, $startTime: String, $endTime: String, $associatedTables: [String]) {
+  updateSession(_id: $_id, title: $title, description: $description, startTime: $startTime, endTime: $endTime, associatedTables: $associatedTables) {
+    _id
+    title
+    description
+    startTime
+    endTime
+    associatedTables
+    createdAt
+    updatedAt
+  }
+}
+
+mutation removeSession($_id: String!) {
+  removeSession(_id: $_id) {
+    _id
+  }
+}

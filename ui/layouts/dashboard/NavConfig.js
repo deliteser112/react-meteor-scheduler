@@ -22,6 +22,11 @@ const navConfig = [
         path: `${PATH_DASHBOARD.document.root}`,
         icon: getIcon('gala:file-doc'),
       },
+      {
+        title: 'sessions',
+        path: `${PATH_DASHBOARD.session.root}`,
+        icon: getIcon('mdi:class'),
+      },
     ],
   },
   {

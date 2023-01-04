@@ -1,0 +1,26 @@
+#import "../_fragments/Sessions.gql"
+
+query sessions {
+  sessions {
+    _id
+    title
+    description
+    startTime
+    endTime
+    associatedTables
+    updatedAt
+    createdAt
+  }
+}
+
+query editSession($_id: String) {
+  session(_id: $_id) {
+    ...SessionAttributes
+  }
+}
+
+query session($_id: String, $sortBy: String) {
+  session(_id: $_id) {
+    ...SessionAttributes
+  }
+}

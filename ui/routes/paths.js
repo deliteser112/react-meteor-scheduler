@@ -46,6 +46,13 @@ export const PATH_DASHBOARD = {
     edit: (name) => path(ROOTS_DASHBOARD, `/documents/${name}/edit`),
   },
 
+  // documents
+  session: {
+    root: path(ROOTS_DASHBOARD, '/sessions'),
+    create: path(ROOTS_DASHBOARD, '/sessions/create'),
+    edit: (name) => path(ROOTS_DASHBOARD, `/sessions/${name}/edit`),
+  },
+
   // users
   user: {
     root: path(ROOTS_DASHBOARD, '/users'),
