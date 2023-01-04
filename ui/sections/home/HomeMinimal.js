@@ -98,7 +98,7 @@ export default function HomeMinimal() {
           }}
         >
           <Typography component="div" variant="overline" sx={{ mb: 2, color: 'text.disabled' }}>
-            Meteor Starter Kit
+            Scheduler
           </Typography>
           <Typography variant="h2">What this kit helps you?</Typography>
         </Box>

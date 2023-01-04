@@ -85,7 +85,7 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
         <ConfirmDialog
           onAgree={handleAgree}
           isOpen={dialogOpen}
-          title="Meteor Starter Kit | Confirm"
+          title="Scheduler | Confirm"
           content="Are you sure to delete this item?"
         />
         <TableMoreMenu

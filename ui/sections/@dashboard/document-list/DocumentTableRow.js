@@ -53,7 +53,7 @@ export default function DocumentTableRow({ row, selected, onEditRow, onSelectRow
         <ConfirmDialog
           onAgree={handleAgree}
           isOpen={dialogOpen}
-          title="Meteor Starter Kit | Confirm"
+          title="Scheduler | Confirm"
           content="Are you sure to delete this item?"
         />
         <Checkbox checked={selected} onClick={onSelectRow} />

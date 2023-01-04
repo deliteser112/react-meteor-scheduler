@@ -88,7 +88,7 @@ export default function MainHeader() {
               ...(!isHome && { color: 'text.primary' }),
             }}
           >
-            Meteor Starter Kit
+            Scheduler
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
 
