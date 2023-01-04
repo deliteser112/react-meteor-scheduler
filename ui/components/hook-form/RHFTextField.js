@@ -4,11 +4,19 @@ import PropTypes from 'prop-types';
 import { useFormContext, Controller } from 'react-hook-form';
 // @mui
 import { TextField } from '@mui/material';
+import { alpha, styled } from '@mui/material/styles';
+import InputBase from '@mui/material/InputBase';
 
 // ----------------------------------------------------------------------
 
+const BootstrapInput = styled(TextField)(({ theme }) => ({
+  '& .MuiInputBase-root': {
+    borderRadius: 0
+  }
+}));
+
 RHFTextField.propTypes = {
-  name: PropTypes.string,
+  name: PropTypes.string
 };
 
 export default function RHFTextField({ name, ...other }) {
@@ -19,7 +27,15 @@ export default function RHFTextField({ name, ...other }) {
       name={name}
       control={control}
       render={({ field, fieldState: { error } }) => (
-        <TextField {...field} fullWidth error={!!error} helperText={error?.message} {...other} />
+        <BootstrapInput
+          {...field}
+          fullWidth
+          error={!!error}
+          helperText={error?.message}
+          {...other}
+          size="small"
+          variant="filled"
+        />
       )}
     />
   );

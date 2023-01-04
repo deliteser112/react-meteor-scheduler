@@ -1,0 +1,10 @@
+fragment SessionAttributes on Session {
+	_id
+	title
+	description
+	startTime
+	endTime
+	associatedTables
+	updatedAt
+	createdAt
+}
