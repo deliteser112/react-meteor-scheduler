@@ -22,6 +22,11 @@ import SessionTypes from '../../api/Sessions/types';
 import SessionQueries from '../../api/Sessions/queries';
 import SessionMutations from '../../api/Sessions/mutations';
 
+// entity
+import EntityTypes from '../../api/Entities/types';
+import EntityQueries from '../../api/Entities/queries';
+import EntityMutations from '../../api/Entities/mutations';
+
 import OAuthQueries from '../../api/OAuth/queries';
 
 import '../../api/Documents/server/indexes';
@@ -39,6 +44,7 @@ const schema = {
 
     # scheduler inputs
     ${SessionTypes}
+    ${EntityTypes}
 
     # user management
     ${UserTypes}
@@ -51,6 +57,9 @@ const schema = {
       # scheduler queries
       sessions: [Session]
       session(_id: String): Session
+
+      entities: [Entity]
+      entity(_id: String): Entity
 
       # user management
       user(_id: String): User
@@ -72,6 +81,10 @@ const schema = {
       updateSession(_id: String!, title: String, description: String, startTime: String, endTime: String): Session
       removeSession(_id: String!): Session
 
+      addEntity(title: String): Entity
+      updateEntity(_id: String!, title: String): Entity
+      removeEntity(_id: String!): Entity
+
       # user management
       updateUser(user: UserInput): User
       removeUser(_id: String): User
@@ -92,6 +105,7 @@ const schema = {
 
       // scheduler inputs
       ...SessionQueries,
+      ...EntityQueries,
 
       // user management
       ...UserQueries,
@@ -104,6 +118,7 @@ const schema = {
 
       // scheduler actions
       ...SessionMutations,
+      ...EntityMutations,
 
       // user management
       ...UserMutations,

@@ -1,0 +1,22 @@
+#import "../_fragments/Entities.gql"
+
+query entities {
+  entities {
+    _id
+    title
+    updatedAt
+    createdAt
+  }
+}
+
+query editEntity($_id: String) {
+  entity(_id: $_id) {
+    ...EntityAttributes
+  }
+}
+
+query entity($_id: String, $sortBy: String) {
+  entity(_id: $_id) {
+    ...EntityAttributes
+  }
+}

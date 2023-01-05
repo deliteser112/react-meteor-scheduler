@@ -5,8 +5,6 @@ export default {
   addSession: async (root, args, context) => {
     if (!context.user) throw new Error('Sorry, you must be logged in to add a new session.');
 
-    console.log(args);
-
     const date = new Date().toISOString();
     const sessionId = Sessions.insert({
       title: args.title,

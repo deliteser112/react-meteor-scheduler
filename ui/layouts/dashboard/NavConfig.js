@@ -27,6 +27,12 @@ const navConfig = [
         path: `${PATH_DASHBOARD.session.root}`,
         icon: getIcon('mdi:class'),
       },
+      
+      {
+        title: 'entities',
+        path: `${PATH_DASHBOARD.entity.root}`,
+        icon: getIcon('material-symbols:school'),
+      },
     ],
   },
   {

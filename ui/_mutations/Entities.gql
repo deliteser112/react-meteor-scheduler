@@ -1,0 +1,23 @@
+mutation addEntity($title: String) {
+  addEntity(title: $title) {
+    _id
+    title
+    createdAt
+    updatedAt
+  }
+}
+
+mutation updateEntity($_id: String!, $title: String) {
+  updateEntity(_id: $_id, title: $title) {
+    _id
+    title
+    createdAt
+    updatedAt
+  }
+}
+
+mutation removeEntity($_id: String!) {
+  removeEntity(_id: $_id) {
+    _id
+  }
+}
