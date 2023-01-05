@@ -33,6 +33,11 @@ const navConfig = [
         path: `${PATH_DASHBOARD.entity.root}`,
         icon: getIcon('material-symbols:school'),
       },
+      {
+        title: 'locations',
+        path: `${PATH_DASHBOARD.location.root}`,
+        icon: getIcon('mdi:location-add-outline'),
+      },
     ],
   },
   {

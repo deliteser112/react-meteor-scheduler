@@ -60,6 +60,13 @@ export const PATH_DASHBOARD = {
     edit: (name) => path(ROOTS_DASHBOARD, `/entities/${name}/edit`),
   },
 
+  // locations
+  location: {
+    root: path(ROOTS_DASHBOARD, '/locations'),
+    create: path(ROOTS_DASHBOARD, '/locations/create'),
+    edit: (name) => path(ROOTS_DASHBOARD, `/locations/${name}/edit`),
+  },
+
   // users
   user: {
     root: path(ROOTS_DASHBOARD, '/users'),

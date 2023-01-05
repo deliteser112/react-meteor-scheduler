@@ -27,6 +27,11 @@ import EntityTypes from '../../api/Entities/types';
 import EntityQueries from '../../api/Entities/queries';
 import EntityMutations from '../../api/Entities/mutations';
 
+// location
+import LocationTypes from '../../api/Locations/types';
+import LocationQueries from '../../api/Locations/queries';
+import LocationMutations from '../../api/Locations/mutations';
+
 import OAuthQueries from '../../api/OAuth/queries';
 
 import '../../api/Documents/server/indexes';
@@ -36,7 +41,6 @@ import '../../api/App/server/publications';
 
 import '../../api/Users/methods';
 
-
 const schema = {
   typeDefs: gql`
     ${DocumentTypes}
@@ -45,6 +49,7 @@ const schema = {
     # scheduler inputs
     ${SessionTypes}
     ${EntityTypes}
+    ${LocationTypes}
 
     # user management
     ${UserTypes}
@@ -61,6 +66,9 @@ const schema = {
       entities: [Entity]
       entity(_id: String): Entity
 
+      locations: [Location]
+      location(_id: String): Location
+
       # user management
       user(_id: String): User
       users(currentPage: Int, perPage: Int, search: String): Users
@@ -76,6 +84,8 @@ const schema = {
       addComment(documentId: String!, comment: String!): Comment
       removeComment(commentId: String!): Comment
 
+      # ------------------------------- ### ---------------------------------- #
+
       # scheduler mutations
       addSession(title: String, description: String, startTime: String, endTime: String): Session
       updateSession(_id: String!, title: String, description: String, startTime: String, endTime: String): Session
@@ -85,6 +95,11 @@ const schema = {
       updateEntity(_id: String!, title: String): Entity
       removeEntity(_id: String!): Entity
 
+      addLocation(title: String, address: String, entity: EntityInput): Location
+      updateLocation(_id: String!, title: String, address: String, entity: EntityInput): Location
+      removeLocation(_id: String!): Location
+
+      # ------------------------------- ### ---------------------------------- #
       # user management
       updateUser(user: UserInput): User
       removeUser(_id: String): User
@@ -106,11 +121,12 @@ const schema = {
       // scheduler inputs
       ...SessionQueries,
       ...EntityQueries,
+      ...LocationQueries,
 
       // user management
       ...UserQueries,
       ...UserSettingsQueries,
-      ...OAuthQueries,
+      ...OAuthQueries
     },
     Mutation: {
       ...DocumentMutations,
@@ -119,18 +135,19 @@ const schema = {
       // scheduler actions
       ...SessionMutations,
       ...EntityMutations,
+      ...LocationMutations,
 
       // user management
       ...UserMutations,
-      ...UserSettingsMutations,
+      ...UserSettingsMutations
     },
     Document: {
-      comments: CommentQueries.comments,
+      comments: CommentQueries.comments
     },
     Comment: {
-      user: UserQueries.user,
-    },
-  },
+      user: UserQueries.user
+    }
+  }
 };
 
 export default makeExecutableSchema(schema);

@@ -1,0 +1,11 @@
+fragment LocationAttributes on Location {
+	_id
+	title
+	address
+	entity {
+		_id
+		title
+	}
+	updatedAt
+	createdAt
+}

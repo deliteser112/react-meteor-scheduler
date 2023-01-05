@@ -1,0 +1,33 @@
+mutation addLocation($title: String, $address: String, $entity: EntityInput) {
+  addLocation(title: $title, address: $address, entity: $entity) {
+    _id
+    title
+    address
+    entity {
+      _id
+      title
+    }
+    createdAt
+    updatedAt
+  }
+}
+
+mutation updateLocation($_id: String!, $title: String, $address: String, $entity: EntityInput) {
+  updateLocation(_id: $_id, title: $title, address: $address, entity: $entity) {
+    _id
+    title
+    address
+    entity {
+      _id
+      title
+    }
+    createdAt
+    updatedAt
+  }
+}
+
+mutation removeLocation($_id: String!) {
+  removeLocation(_id: $_id) {
+    _id
+  }
+}
