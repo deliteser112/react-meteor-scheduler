@@ -1,0 +1,27 @@
+#import "../_fragments/Locations.gql"
+
+query locations {
+  locations {
+    _id
+    title
+    address
+    entity {
+      _id
+      title
+    }
+    updatedAt
+    createdAt
+  }
+}
+
+query editLocation($_id: String) {
+  location(_id: $_id) {
+    ...LocationAttributes
+  }
+}
+
+query location($_id: String, $sortBy: String) {
+  location(_id: $_id) {
+    ...LocationAttributes
+  }
+}
