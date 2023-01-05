@@ -1,0 +1,23 @@
+#import "../_fragments/Areas.gql"
+
+query areas {
+  areas {
+    _id
+    title
+    alternateName
+    updatedAt
+    createdAt
+  }
+}
+
+query editArea($_id: String) {
+  area(_id: $_id) {
+    ...AreaAttributes
+  }
+}
+
+query area($_id: String, $sortBy: String) {
+  area(_id: $_id) {
+    ...AreaAttributes
+  }
+}

@@ -1,0 +1,25 @@
+mutation addArea($title: String, $alternateName: String) {
+  addArea(title: $title, alternateName: $alternateName) {
+    _id
+    title
+    alternateName
+    createdAt
+    updatedAt
+  }
+}
+
+mutation updateArea($_id: String!, $title: String, $alternateName: String) {
+  updateArea(_id: $_id, title: $title, alternateName: $alternateName) {
+    _id
+    title
+    alternateName
+    createdAt
+    updatedAt
+  }
+}
+
+mutation removeArea($_id: String!) {
+  removeArea(_id: $_id) {
+    _id
+  }
+}

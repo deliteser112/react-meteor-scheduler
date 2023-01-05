@@ -63,6 +63,11 @@ export default function Router() {
         { path: 'locations', element: <Locations /> },
         { path: 'locations/create', element: <LocationCreate /> },
         { path: 'locations/:locationId/edit', element: <LocationCreate /> },
+
+        // areas
+        { path: 'areas', element: <Areas /> },
+        { path: 'areas/create', element: <AreaCreate /> },
+        { path: 'areas/:areaId/edit', element: <AreaCreate /> },
         
         // Admin/users
         {
@@ -167,6 +172,10 @@ const EntityCreate = Loadable(lazy(() => import('../pages/dashboard/entity/Entit
 // locations
 const Locations = Loadable(lazy(() => import('../pages/dashboard/location')));
 const LocationCreate = Loadable(lazy(() => import('../pages/dashboard/location/LocationCreate')));
+
+// areas
+const Areas = Loadable(lazy(() => import('../pages/dashboard/area')));
+const AreaCreate = Loadable(lazy(() => import('../pages/dashboard/area/AreaCreate')));
 
 // users
 const User = Loadable(lazy(() => import('../pages/dashboard/user')));

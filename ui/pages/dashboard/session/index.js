@@ -2,8 +2,6 @@ import React from 'react';
 import { useSnackbar } from 'notistack';
 import { Link as RouterLink } from 'react-router-dom';
 
-import { Cloudinary } from 'meteor/socialize:cloudinary';
-
 // import queries
 import { useQuery, useMutation } from '@apollo/react-hooks';
 // @mui

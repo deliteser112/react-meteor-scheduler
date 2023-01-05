@@ -16,27 +16,27 @@ import HeaderBreadcrumbs from '../../../components/HeaderBreadcrumbs';
 import Iconify from '../../../components/Iconify';
 
 // sections
-import EntityList from './EntityList';
+import AreaList from './AreaList';
 
 // queries & mutations
-import { entities as entitiesQuery } from '../../../_queries/Entities.gql';
-import { removeEntity as removeEntityMutation } from '../../../_mutations/Entities.gql';
+import { areas as areasQuery } from '../../../_queries/Areas.gql';
+import { removeArea as removeAreaMutation } from '../../../_mutations/Areas.gql';
 // ----------------------------------------------------------------------
 
-export default function Entity() {
+export default function Area() {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-  const [removeEntity] = useMutation(removeEntityMutation);
+  const [removeArea] = useMutation(removeAreaMutation);
 
-  const { loading, data } = useQuery(entitiesQuery);
+  const { loading, data } = useQuery(areasQuery);
 
-  const entities = (data && data.entities) || [];
+  const areas = (data && data.areas) || [];
 
-  const deleteEntity = (_id) => {
-    removeEntity({
+  const deleteArea = (_id) => {
+    removeArea({
       variables: {
         _id
       },
-      refetchQueries: [{ query: entitiesQuery }]
+      refetchQueries: [{ query: areasQuery }]
     }).then(async (res) => {
       enqueueSnackbar('Deleted successfully!', {
         variant: 'success',
@@ -51,23 +51,23 @@ export default function Entity() {
   };
 
   return (
-    <Page title="Entity">
+    <Page title="Area">
       <Container maxWidth="lg">
         <HeaderBreadcrumbs
-          heading="Entities"
-          links={[{ name: 'Dashboard', href: PATH_DASHBOARD.root }, { name: 'Entity' }]}
+          heading="Areas"
+          links={[{ name: 'Dashboard', href: PATH_DASHBOARD.root }, { name: 'Area' }]}
           action={
             <Button
               variant="contained"
               component={RouterLink}
-              to={PATH_DASHBOARD.entity.create}
+              to={PATH_DASHBOARD.area.create}
               startIcon={<Iconify icon="eva:plus-fill" />}
             >
-              New Entity
+              New Area
             </Button>
           }
         />
-        <EntityList isLoading={loading} entityList={entities} onDelete={(id) => deleteEntity(id)} />
+        <AreaList isLoading={loading} areaList={areas} onDelete={(id) => deleteArea(id)} />
       </Container>
     </Page>
   );

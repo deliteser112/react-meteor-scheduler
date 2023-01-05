@@ -38,6 +38,11 @@ const navConfig = [
         path: `${PATH_DASHBOARD.location.root}`,
         icon: getIcon('mdi:location-add-outline'),
       },
+      {
+        title: 'areas',
+        path: `${PATH_DASHBOARD.area.root}`,
+        icon: getIcon('mdi:folder-special'),
+      },
     ],
   },
   {
