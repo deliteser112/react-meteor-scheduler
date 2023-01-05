@@ -1,0 +1,7 @@
+fragment AreaAttributes on Area {
+	_id
+	title
+	alternateName
+	updatedAt
+	createdAt
+}

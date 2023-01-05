@@ -32,6 +32,11 @@ import LocationTypes from '../../api/Locations/types';
 import LocationQueries from '../../api/Locations/queries';
 import LocationMutations from '../../api/Locations/mutations';
 
+// location
+import AreaTypes from '../../api/Areas/types';
+import AreaQueries from '../../api/Areas/queries';
+import AreaMutations from '../../api/Areas/mutations';
+
 import OAuthQueries from '../../api/OAuth/queries';
 
 import '../../api/Documents/server/indexes';
@@ -50,6 +55,7 @@ const schema = {
     ${SessionTypes}
     ${EntityTypes}
     ${LocationTypes}
+    ${AreaTypes}
 
     # user management
     ${UserTypes}
@@ -68,6 +74,9 @@ const schema = {
 
       locations: [Location]
       location(_id: String): Location
+
+      areas: [Area]
+      area(_id: String): Area
 
       # user management
       user(_id: String): User
@@ -99,6 +108,10 @@ const schema = {
       updateLocation(_id: String!, title: String, address: String, entity: EntityInput): Location
       removeLocation(_id: String!): Location
 
+      addArea(title: String, alternateName: String): Area
+      updateArea(_id: String!, title: String, alternateName: String): Area
+      removeArea(_id: String!): Area
+
       # ------------------------------- ### ---------------------------------- #
       # user management
       updateUser(user: UserInput): User
@@ -122,6 +135,7 @@ const schema = {
       ...SessionQueries,
       ...EntityQueries,
       ...LocationQueries,
+      ...AreaQueries,
 
       // user management
       ...UserQueries,
@@ -136,6 +150,7 @@ const schema = {
       ...SessionMutations,
       ...EntityMutations,
       ...LocationMutations,
+      ...AreaMutations,
 
       // user management
       ...UserMutations,

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import * as Yup from 'yup';
 import { useSnackbar } from 'notistack';
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // import mutations
@@ -11,7 +11,6 @@ import { useMutation } from '@apollo/react-hooks';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
-import { styled } from '@mui/material/styles';
 import { LoadingButton } from '@mui/lab';
 
 import { Card, Grid, Stack, Box, IconButton } from '@mui/material';
@@ -22,36 +21,38 @@ import { FormProvider, RHFTextField } from '../../../components/hook-form';
 import Iconify from '../../../components/Iconify';
 
 // mutations
-import { addEntity as addEntityMutation, updateEntity as updateEntityMutation } from '../../../_mutations/Entities.gql';
-import { entities as entitiesQuery } from '../../../_queries/Entities.gql';
+import { addArea as addAreaMutation, updateArea as updateAreaMutation } from '../../../_mutations/Areas.gql';
+import { areas as areasQuery } from '../../../_queries/Areas.gql';
 
 // ----------------------------------------------------------------------
 
-EntityNewForm.propTypes = {
+AreaNewForm.propTypes = {
   isEdit: PropTypes.bool,
-  currentEntity: PropTypes.object
+  currentArea: PropTypes.object
 };
 
-export default function EntityNewForm({ isEdit, currentEntity }) {
-  const [addEntity] = useMutation(addEntityMutation);
-  const [updateEntity] = useMutation(updateEntityMutation);
+export default function AreaNewForm({ isEdit, currentArea }) {
+  const [addArea] = useMutation(addAreaMutation);
+  const [updateArea] = useMutation(updateAreaMutation);
   const navigate = useNavigate();
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-  const NewEntitySchema = Yup.object().shape({
-    title: Yup.string().required('Title is required')
+  const NewAreaSchema = Yup.object().shape({
+    title: Yup.string().required('Title is required'),
+    alternateName: Yup.string().required('Alternate Name is required')
   });
 
   const defaultValues = useMemo(
     () => ({
-      title: currentEntity?.title || ''
+      title: currentArea?.title || '',
+      alternateName: currentArea?.alternateName || ''
     }),
-    [currentEntity]
+    [currentArea]
   );
 
   const methods = useForm({
-    resolver: yupResolver(NewEntitySchema),
+    resolver: yupResolver(NewAreaSchema),
     defaultValues
   });
 
@@ -63,32 +64,33 @@ export default function EntityNewForm({ isEdit, currentEntity }) {
   } = methods;
 
   useEffect(() => {
-    if (isEdit && currentEntity) {
+    if (isEdit && currentArea) {
       reset(defaultValues);
     }
     if (!isEdit) {
       reset(defaultValues);
     }
-  }, [isEdit, currentEntity]);
+  }, [isEdit, currentArea]);
 
   const onSubmit = async (values) => {
     try {
-      const { title } = values;
+      const { title, alternateName } = values;
 
-      const mutation = isEdit ? updateEntity : addEntity;
-      const entityToAddOrUpdate = {
-        title
+      const mutation = isEdit ? updateArea : addArea;
+      const areaToAddOrUpdate = {
+        title,
+        alternateName
       };
 
       if (isEdit) {
-        entityToAddOrUpdate._id = currentEntity._id;
+        areaToAddOrUpdate._id = currentArea._id;
       }
 
       mutation({
         variables: {
-          ...entityToAddOrUpdate
+          ...areaToAddOrUpdate
         },
-        refetchQueries: [{ query: entitiesQuery }]
+        refetchQueries: [{ query: areasQuery }]
       }).then(() => {
         reset();
         enqueueSnackbar(!isEdit ? 'Created successfully!' : 'Updated successfully!', {
@@ -100,7 +102,7 @@ export default function EntityNewForm({ isEdit, currentEntity }) {
             </IconButton>
           )
         });
-        navigate(PATH_DASHBOARD.entity.root);
+        navigate(PATH_DASHBOARD.area.root);
       });
     } catch (error) {
       console.error(error);
@@ -113,11 +115,12 @@ export default function EntityNewForm({ isEdit, currentEntity }) {
         <Grid item xs={12} md={12}>
           <Card sx={{ p: 3 }}>
             <Stack spacing={3}>
-              <RHFTextField name="title" label="Entity Title" sx={{ maxWidth: 400 }} />
+              <RHFTextField name="title" label="Title" sx={{ maxWidth: 400 }} />
+              <RHFTextField name="alternateName" label="Alternate Name" sx={{ maxWidth: 400 }} />
             </Stack>
             <Box m={2} />
             <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-              {!isEdit ? 'Create Entity' : 'Save Changes'}
+              {!isEdit ? 'Create Area' : 'Save Changes'}
             </LoadingButton>
           </Card>
         </Grid>
