@@ -18,27 +18,27 @@ import HeaderBreadcrumbs from '../../../components/HeaderBreadcrumbs';
 import Iconify from '../../../components/Iconify';
 
 // sections
-import SessionList from './SessionList';
+import EntityList from './EntityList';
 
 // queries & mutations
-import { sessions as sessionsQuery } from '../../../_queries/Sessions.gql';
-import { removeSession as removeSessionMutation } from '../../../_mutations/Sessions.gql';
+import { entities as entitiesQuery } from '../../../_queries/Entities.gql';
+import { removeEntity as removeEntityMutation } from '../../../_mutations/Entities.gql';
 // ----------------------------------------------------------------------
 
-export default function Session() {
+export default function Entity() {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-  const [removeSession] = useMutation(removeSessionMutation);
+  const [removeEntity] = useMutation(removeEntityMutation);
 
-  const { loading, data } = useQuery(sessionsQuery);
+  const { loading, data } = useQuery(entitiesQuery);
 
-  const sessions = (data && data.sessions) || [];
+  const entities = (data && data.entities) || [];
 
-  const deleteSession = (_id) => {
-    removeSession({
+  const deleteEntity = (_id) => {
+    removeEntity({
       variables: {
         _id
       },
-      refetchQueries: [{ query: sessionsQuery }]
+      refetchQueries: [{ query: entitiesQuery }]
     }).then(async (res) => {
       enqueueSnackbar('Deleted successfully!', {
         variant: 'success',
@@ -53,23 +53,23 @@ export default function Session() {
   };
 
   return (
-    <Page title="Document">
+    <Page title="Entity">
       <Container maxWidth="lg">
         <HeaderBreadcrumbs
-          heading="Sessions"
-          links={[{ name: 'Dashboard', href: PATH_DASHBOARD.root }, { name: 'Sessions' }]}
+          heading="Entities"
+          links={[{ name: 'Dashboard', href: PATH_DASHBOARD.root }, { name: 'Entity' }]}
           action={
             <Button
               variant="contained"
               component={RouterLink}
-              to={PATH_DASHBOARD.session.create}
+              to={PATH_DASHBOARD.entity.create}
               startIcon={<Iconify icon="eva:plus-fill" />}
             >
-              New Session
+              New Entity
             </Button>
           }
         />
-        <SessionList isLoading={loading} sessionList={sessions} onDelete={(id) => deleteSession(id)} />
+        <EntityList isLoading={loading} entityList={entities} onDelete={(id) => deleteEntity(id)} />
       </Container>
     </Page>
   );

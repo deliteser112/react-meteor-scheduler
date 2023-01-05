@@ -15,15 +15,15 @@ import { fDate, fTime } from '../../../utils/formatTime';
 
 // ----------------------------------------------------------------------
 
-DocumentTableRow.propTypes = {
+SessionTableRow.propTypes = {
   row: PropTypes.object,
   selected: PropTypes.bool,
   onSelectRow: PropTypes.func,
   onDeleteRow: PropTypes.func
 };
 
-export default function DocumentTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
-  const { title, isPublic, cover, createdAt } = row;
+export default function SessionTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
+  const { title, startTime, endTime, cover, createdAt } = row;
 
   const mockImageUrl = '/assets/document.png';
 
@@ -71,7 +71,12 @@ export default function DocumentTableRow({ row, selected, onEditRow, onSelectRow
       </TableCell>
       <TableCell align="left">
         <Label variant="ghost" color="primary">
-          {isPublic ? 'Public' : 'Private'}
+          {fTime(startTime || null)}
+        </Label>
+      </TableCell>
+      <TableCell align="left">
+        <Label variant="ghost" color="primary">
+          {fTime(endTime || null)}
         </Label>
       </TableCell>
       <TableCell align="left">{fDate(new Date(createdAt))}</TableCell>

@@ -49,11 +49,16 @@ export default function Router() {
         { path: 'documents/create', element: <DocumentCreate /> },
         { path: 'documents/:documentId/edit', element: <DocumentCreate /> },
 
-        // documents
+        // sessions
         { path: 'sessions', element: <Sessions /> },
         { path: 'sessions/create', element: <SessionCreate /> },
         { path: 'sessions/:sessionId/edit', element: <SessionCreate /> },
 
+        // entities
+        { path: 'entities', element: <Entities /> },
+        { path: 'entities/create', element: <EntityCreate /> },
+        { path: 'entities/:entityId/edit', element: <EntityCreate /> },
+        
         // Admin/users
         {
           path: 'users',
@@ -149,6 +154,10 @@ const DocumentCreate = Loadable(lazy(() => import('../pages/dashboard/document/D
 // sessions
 const Sessions = Loadable(lazy(() => import('../pages/dashboard/session')));
 const SessionCreate = Loadable(lazy(() => import('../pages/dashboard/session/SessionCreate')));
+
+// entities
+const Entities = Loadable(lazy(() => import('../pages/dashboard/entity')));
+const EntityCreate = Loadable(lazy(() => import('../pages/dashboard/entity/EntityCreate')));
 
 // users
 const User = Loadable(lazy(() => import('../pages/dashboard/user')));

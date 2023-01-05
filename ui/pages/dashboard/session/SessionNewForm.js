@@ -57,7 +57,7 @@ export default function SessionNewEditForm({ isEdit, currentSession }) {
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
 
-  const NewDocumentSchema = Yup.object().shape({
+  const NewEntitySchema = Yup.object().shape({
     title: Yup.string().required('Title is required'),
     // startTime: Yup.string().required('Start Time is required'),
     // endTime: Yup.string().required('End Time is required'),
@@ -75,7 +75,7 @@ export default function SessionNewEditForm({ isEdit, currentSession }) {
   );
 
   const methods = useForm({
-    resolver: yupResolver(NewDocumentSchema),
+    resolver: yupResolver(NewEntitySchema),
     defaultValues
   });
 

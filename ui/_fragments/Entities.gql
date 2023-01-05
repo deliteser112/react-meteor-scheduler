@@ -1,0 +1,6 @@
+fragment EntityAttributes on Entity {
+	_id
+	title
+	updatedAt
+	createdAt
+}

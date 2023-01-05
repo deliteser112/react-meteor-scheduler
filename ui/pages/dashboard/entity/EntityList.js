@@ -32,20 +32,18 @@ import {
 import { PATH_DASHBOARD } from '../../../routes/paths';
 
 // sections
-import { SessionTableRow, SessionTableToolbar } from '../../../sections/@dashboard/session-list';
+import { EntityTableRow, EntityTableToolbar } from '../../../sections/@dashboard/entity-list';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
   { id: 'title', label: 'Title', alignRight: false },
-  { id: 'startTime', label: 'Start Time', alignRight: false },
-  { id: 'endTime', label: 'End Time', alignRight: false },
   { id: 'createdAt', label: 'Created At', alignRight: false },
   { id: '' }
 ];
 
 // ----------------------------------------------------------------------
-export default function SessionList({ sessionList, isLoading, onDelete }) {
+export default function EntityList({ entityList, isLoading, onDelete }) {
   const {
     dense,
     page,
@@ -73,10 +71,10 @@ export default function SessionList({ sessionList, isLoading, onDelete }) {
   const [filterName, setFilterName] = useState('');
 
   useEffect(() => {
-    if (sessionList.length) {
-      setTableData(sessionList);
+    if (entityList.length) {
+      setTableData(entityList);
     }
-  }, [sessionList]);
+  }, [entityList]);
 
   const handleFilterName = (filterName) => {
     setFilterName(filterName);
@@ -97,7 +95,7 @@ export default function SessionList({ sessionList, isLoading, onDelete }) {
   };
 
   const handleEditRow = (id) => {
-    navigate(PATH_DASHBOARD.session.edit(id));
+    navigate(PATH_DASHBOARD.entity.edit(id));
   };
 
   const dataFiltered = applySortFilter({
@@ -112,7 +110,7 @@ export default function SessionList({ sessionList, isLoading, onDelete }) {
 
   return (
     <Card>
-      <SessionTableToolbar filterName={filterName} onFilterName={handleFilterName} />
+      <EntityTableToolbar filterName={filterName} onFilterName={handleFilterName} />
 
       <Scrollbar>
         <TableContainer sx={{ minWidth: 960, position: 'relative' }}>
@@ -158,7 +156,7 @@ export default function SessionList({ sessionList, isLoading, onDelete }) {
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) =>
                   row ? (
-                    <SessionTableRow
+                    <EntityTableRow
                       key={index}
                       row={row}
                       selected={selected.includes(row._id)}
@@ -200,9 +198,9 @@ export default function SessionList({ sessionList, isLoading, onDelete }) {
   );
 }
 
-SessionList.propTypes = {
+EntityList.propTypes = {
   isLoading: PropTypes.bool,
-  sessionList: PropTypes.array,
+  entityList: PropTypes.array,
   onDelete: PropTypes.func
 };
 

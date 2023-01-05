@@ -11,21 +11,21 @@ import Iconify from '../../../components/Iconify';
 import ConfirmDialog from '../../../components/ConfirmDialog';
 
 // utils
-import { fDate, fTime } from '../../../utils/formatTime';
+import { fDate } from '../../../utils/formatTime';
 
 // ----------------------------------------------------------------------
 
-DocumentTableRow.propTypes = {
+EntityTableRow.propTypes = {
   row: PropTypes.object,
   selected: PropTypes.bool,
   onSelectRow: PropTypes.func,
   onDeleteRow: PropTypes.func
 };
 
-export default function DocumentTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
-  const { title, isPublic, cover, createdAt } = row;
+export default function EntityTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
+  const { title, cover, createdAt } = row;
 
-  const mockImageUrl = '/assets/document.png';
+  const mockImageUrl = '/assets/entity.png';
 
   const [openMenu, setOpenMenuActions] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -68,11 +68,6 @@ export default function DocumentTableRow({ row, selected, onEditRow, onSelectRow
         <Typography variant="subtitle2" noWrap>
           {title}
         </Typography>
-      </TableCell>
-      <TableCell align="left">
-        <Label variant="ghost" color="primary">
-          {isPublic ? 'Public' : 'Private'}
-        </Label>
       </TableCell>
       <TableCell align="left">{fDate(new Date(createdAt))}</TableCell>
       <TableCell align="right">

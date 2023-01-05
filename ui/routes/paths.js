@@ -46,11 +46,18 @@ export const PATH_DASHBOARD = {
     edit: (name) => path(ROOTS_DASHBOARD, `/documents/${name}/edit`),
   },
 
-  // documents
+  // sessions
   session: {
     root: path(ROOTS_DASHBOARD, '/sessions'),
     create: path(ROOTS_DASHBOARD, '/sessions/create'),
     edit: (name) => path(ROOTS_DASHBOARD, `/sessions/${name}/edit`),
+  },
+
+  // entities
+  entity: {
+    root: path(ROOTS_DASHBOARD, '/entities'),
+    create: path(ROOTS_DASHBOARD, '/entities/create'),
+    edit: (name) => path(ROOTS_DASHBOARD, `/entities/${name}/edit`),
   },
 
   // users
