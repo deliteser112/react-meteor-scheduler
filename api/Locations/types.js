@@ -12,4 +12,9 @@ export default `
     _id: String
     title: String
   }
+
+  input LocationInput {
+    _id: String
+    title: String
+  }
 `;

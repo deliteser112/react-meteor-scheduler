@@ -14,7 +14,6 @@ import LogoOnlyLayout from '../layouts/LogoOnlyLayout';
 // components
 import LoadingScreen from '../components/LoadingScreen';
 
-
 // ----------------------------------------------------------------------
 
 const Loadable = (Component) => (props) => {
@@ -54,11 +53,6 @@ export default function Router() {
         { path: 'sessions/create', element: <SessionCreate /> },
         { path: 'sessions/:sessionId/edit', element: <SessionCreate /> },
 
-        // entities
-        { path: 'entities', element: <Entities /> },
-        { path: 'entities/create', element: <EntityCreate /> },
-        { path: 'entities/:entityId/edit', element: <EntityCreate /> },
-
         // locations
         { path: 'locations', element: <Locations /> },
         { path: 'locations/create', element: <LocationCreate /> },
@@ -68,7 +62,33 @@ export default function Router() {
         { path: 'areas', element: <Areas /> },
         { path: 'areas/create', element: <AreaCreate /> },
         { path: 'areas/:areaId/edit', element: <AreaCreate /> },
-        
+
+        // Admin/entities
+        {
+          path: 'entities',
+          element: (
+            <RoleBasedGuard>
+              <Entities />
+            </RoleBasedGuard>
+          )
+        },
+        {
+          path: 'entities/create',
+          element: (
+            <RoleBasedGuard>
+              <EntityCreate />
+            </RoleBasedGuard>
+          )
+        },
+        {
+          path: 'entities/:entityId/edit',
+          element: (
+            <RoleBasedGuard>
+              <EntityCreate />
+            </RoleBasedGuard>
+          )
+        },
+
         // Admin/users
         {
           path: 'users',

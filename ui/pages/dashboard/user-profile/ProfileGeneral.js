@@ -1,35 +1,37 @@
-import { useMutation } from '@apollo/react-hooks';
+import * as Yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 import PropTypes from 'prop-types';
-import { capitalCase, sentenceCase } from 'change-case';
-import * as Yup from 'yup';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useSnackbar } from 'notistack';
-import { useNavigate } from 'react-router-dom';
-// form
 import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-// @mui
-import { LoadingButton } from '@mui/lab';
-import { Box, Card, Grid, Stack, Typography, Autocomplete, Checkbox, TextField } from '@mui/material';
+import { useMutation } from '@apollo/react-hooks';
+import { useNavigate } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
 
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { capitalCase, sentenceCase } from 'change-case';
+
+// @mui
+import { Autocomplete, Box, Card, Checkbox, Grid, Stack, TextField, Typography } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+
+// routes
+import { PATH_DASHBOARD } from '../../../routes/paths';
 
 // utils
 import { fData } from '../../../utils/formatNumber';
 import resizeBase64Img from '../../../utils/resizeBase64Img';
-// routes
-import { PATH_DASHBOARD } from '../../../routes/paths';
-// components
-import Label from '../../../components/Label';
-import Iconify from '../../../components/Iconify';
-
-import { FormProvider, RHFTextField, RHFUploadAvatar } from '../../../components/hook-form';
 
 // mutations & queries
 import { updateUser as updateUserMutation } from '../../../_mutations/Users.gql';
 import { users as usersQuery } from '../../../_queries/Users.gql';
+
+// components
+import Iconify from '../../../components/Iconify';
+import Label from '../../../components/Label';
+// forms
+import { FormProvider, RHFTextField, RHFUploadAvatar } from '../../../components/hook-form';
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;

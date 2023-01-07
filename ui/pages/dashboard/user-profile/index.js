@@ -17,10 +17,13 @@ import Iconify from '../../../components/Iconify';
 //
 import ProfileCover from './ProfileCover';
 import ProfileSettings from './ProfileSettings';
+import ProfileEntity from './ProfileEntity';
 import ProfileGeneral from './ProfileGeneral';
 
 // import queries
 import { user as userQuery } from '../../../_queries/Users.gql';
+import { entities as entitiesQuery } from '../../../_queries/Entities.gql';
+import { locations as locationsQuery } from '../../../_queries/Locations.gql';
 // ----------------------------------------------------------------------
 
 const TabsWrapperStyle = styled('div')(({ theme }) => ({
@@ -41,11 +44,21 @@ const TabsWrapperStyle = styled('div')(({ theme }) => ({
 
 export default function UserProfile() {
   const { userId } = useParams();
+
+  // get user information
   const { data, loading } = useQuery(userQuery, { variables: { _id: userId } });
+
+  // get entities and locations
+  const eData = useQuery(entitiesQuery).data;
+  const entities = (eData && eData.entities) || [];
+
+  const lData = useQuery(locationsQuery).data;
+  const locations = (lData && lData.locations) || [];
+
   const [currentTab, onChangeTab] = useState('profile');
 
   const user = data && data.user;
-  
+
   if (loading) return <LoadingScreen isDashboard />;
 
   const { _id, name, emailAddress, avatarUrl } = user;
@@ -63,15 +76,23 @@ export default function UserProfile() {
   const PROFILE_TABS = [
     {
       value: 'profile',
-      icon: <Iconify icon="ic:round-account-box" width={20} height={20} />,
+      icon: <Iconify icon="et:profile-male" width={20} height={20} />,
       component: <ProfileGeneral currentUser={user} isEdit />
     },
     {
+      value: 'entity',
+      icon: <Iconify icon="cil:school" width={20} height={20} />,
+      component: (
+        <ProfileEntity currentUser={user} entities={entities} locations={locations} userId={user._id} isEdit />
+      )
+    },
+    {
       value: 'settings',
-      icon: <Iconify icon="eva:heart-fill" width={20} height={20} />,
+      icon: <Iconify icon="uiw:setting-o" width={20} height={20} />,
       component: <ProfileSettings settings={user.settings} userId={user._id} />
     }
   ];
+
   return (
     <Page title="Profile">
       <Container>
@@ -92,7 +113,7 @@ export default function UserProfile() {
               onChange={(event, newValue) => onChangeTab(newValue)}
             >
               {PROFILE_TABS.map((tab) => (
-                <Tab disableRipple key={tab.value} value={tab.value} label={capitalCase(tab.value)} />
+                <Tab disableRipple key={tab.value} value={tab.value} icon={tab.icon} label={capitalCase(tab.value)} />
               ))}
             </Tabs>
           </TabsWrapperStyle>
