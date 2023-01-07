@@ -9,7 +9,7 @@ const getActiveRoles = (userId) => {
       Roles.getAllRoles().map((role) => {
         return {
           ...role,
-          inRole: Roles.userIsInRole(userId, role.name),
+          inRole: Roles.userIsInRole(userId, role.name)
         };
       }) || []
     );
@@ -33,14 +33,14 @@ export default (options) => {
       name: normalizedMeteorUserData.profile.name || '',
       emailAddress: normalizedMeteorUserData.emails[0].address,
       emailVerified:
-        normalizedMeteorUserData.service === 'password'
-          ? normalizedMeteorUserData.emails[0].verified
-          : true,
+        normalizedMeteorUserData.service === 'password' ? normalizedMeteorUserData.emails[0].verified : true,
       avatarUrl: normalizedMeteorUserData.avatarUrl,
       roles: getActiveRoles(normalizedMeteorUserData._id),
-      oAuthProvider:
-        normalizedMeteorUserData.service !== 'password' ? normalizedMeteorUserData.service : null,
+      oAuthProvider: normalizedMeteorUserData.service !== 'password' ? normalizedMeteorUserData.service : null,
       settings: normalizedMeteorUserData.settings,
+      class: normalizedMeteorUserData.class,
+      entities: normalizedMeteorUserData.entities,
+      locations: normalizedMeteorUserData.locations
     };
   } catch (exception) {
     throw new Error(`[mapMeteorUserToSchema] ${exception.message}`);

@@ -15,6 +15,36 @@ const updateUserAvatarUrl = ({ _id, avatarUrl }) => {
   }
 };
 
+const updateUserClass = (item) => {
+  try {
+    return Meteor.users.update(item._id, {
+      $set: { class: item.class },
+    });
+  } catch (exception) {
+    throw new Error(`[updateUser.updateUserClass] ${exception.message}`);
+  }
+};
+
+const updateUserEntities = ({ _id, entities }) => {
+  try {
+    return Meteor.users.update(_id, {
+      $set: { entities },
+    });
+  } catch (exception) {
+    throw new Error(`[updateUser.updateUserEntities] ${exception.message}`);
+  }
+};
+
+const updateUserLocations = ({ _id, locations }) => {
+  try {
+    return Meteor.users.update(_id, {
+      $set: { locations },
+    });
+  } catch (exception) {
+    throw new Error(`[updateUser.updateUserLocations] ${exception.message}`);
+  }
+};
+
 const updateUserSettings = ({ _id, settings }) => {
   try {
     return Meteor.users.update(_id, {
@@ -96,6 +126,9 @@ const updateUser = (options) => {
     if (userToUpdate.profile) updateUserProfile(userToUpdate);
     if (userToUpdate.avatarUrl) updateUserAvatarUrl(userToUpdate);
     if (userToUpdate.settings) updateUserSettings(userToUpdate);
+    if (userToUpdate.entities) updateUserEntities(userToUpdate);
+    if (userToUpdate.locations) updateUserLocations(userToUpdate);
+    if (userToUpdate.class) updateUserClass(userToUpdate);
     
     action.resolve();
   } catch (exception) {

@@ -18,7 +18,7 @@ export default `
   input ProfileInput {
     name: NameInput
   }
-  
+
   input UserInput {
     _id: String,
     avatarUrl: String
@@ -26,6 +26,9 @@ export default `
     password: String,
     profile: ProfileInput,
     roles: [String],
+    entities: [EntityInput]
+    locations: [LocationInput]
+    class: String
     settings: [UserSettingInput] # From /api/UserSettings/types.js
   }
 
@@ -38,6 +41,9 @@ export default `
     emailVerified: Boolean
     oAuthProvider: String
     roles: [Role]
+    entities: [Entity]
+    locations: [Location]
+    class: String
     settings: [UserSetting] # From /api/UserSettings/types.js
   }
 
