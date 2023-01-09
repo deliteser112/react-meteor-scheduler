@@ -37,6 +37,11 @@ import AreaTypes from '../../api/Areas/types';
 import AreaQueries from '../../api/Areas/queries';
 import AreaMutations from '../../api/Areas/mutations';
 
+// template
+import TemplateTypes from '../../api/Templates/types';
+import TemplateQueries from '../../api/Templates/queries';
+import TemplateMutations from '../../api/Templates/mutations';
+
 import OAuthQueries from '../../api/OAuth/queries';
 
 import '../../api/Documents/server/indexes';
@@ -56,6 +61,7 @@ const schema = {
     ${EntityTypes}
     ${LocationTypes}
     ${AreaTypes}
+    ${TemplateTypes}
 
     # user management
     ${UserTypes}
@@ -77,6 +83,9 @@ const schema = {
 
       areas: [Area]
       area(_id: String): Area
+
+      templates: [Template]
+      template(_id: String): Template
 
       # user management
       user(_id: String): User
@@ -112,6 +121,10 @@ const schema = {
       updateArea(_id: String!, title: String, alternateName: String): Area
       removeArea(_id: String!): Area
 
+      addTemplate(template: TemplateInput): Template
+      updateTemplate(template: TemplateInput): Template
+      removeTemplate(_id: String!): Template
+
       # ------------------------------- ### ---------------------------------- #
       # user management
       updateUser(user: UserInput): User
@@ -136,6 +149,7 @@ const schema = {
       ...EntityQueries,
       ...LocationQueries,
       ...AreaQueries,
+      ...TemplateQueries,
 
       // user management
       ...UserQueries,
@@ -151,6 +165,7 @@ const schema = {
       ...EntityMutations,
       ...LocationMutations,
       ...AreaMutations,
+      ...TemplateMutations,
 
       // user management
       ...UserMutations,

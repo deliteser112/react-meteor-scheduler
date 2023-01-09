@@ -74,6 +74,13 @@ export const PATH_DASHBOARD = {
     edit: (name) => path(ROOTS_DASHBOARD, `/areas/${name}/edit`),
   },
 
+  // template
+  template: {
+    root: path(ROOTS_DASHBOARD, '/templates'),
+    create: path(ROOTS_DASHBOARD, '/templates/create'),
+    edit: (name) => path(ROOTS_DASHBOARD, `/templates/${name}/edit`),
+  },
+
   // users
   user: {
     root: path(ROOTS_DASHBOARD, '/users'),

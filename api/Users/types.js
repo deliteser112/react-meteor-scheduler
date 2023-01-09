@@ -22,10 +22,10 @@ export default `
   input UserInput {
     _id: String,
     avatarUrl: String
-    email: String,
-    password: String,
-    profile: ProfileInput,
-    roles: [String],
+    email: String
+    password: String
+    profile: ProfileInput
+    roles: [String]
     entities: [EntityInput]
     locations: [LocationInput]
     class: String

@@ -16,5 +16,6 @@ export default `
   input LocationInput {
     _id: String
     title: String
+    address: String
   }
 `;

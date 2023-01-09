@@ -63,6 +63,11 @@ export default function Router() {
         { path: 'areas/create', element: <AreaCreate /> },
         { path: 'areas/:areaId/edit', element: <AreaCreate /> },
 
+        // templates
+        { path: 'templates', element: <Templates /> },
+        { path: 'templates/create', element: <TemplateCreate /> },
+        { path: 'templates/:templateId/edit', element: <TemplateCreate /> },
+
         // Admin/entities
         {
           path: 'entities',
@@ -196,6 +201,10 @@ const LocationCreate = Loadable(lazy(() => import('../pages/dashboard/location/L
 // areas
 const Areas = Loadable(lazy(() => import('../pages/dashboard/area')));
 const AreaCreate = Loadable(lazy(() => import('../pages/dashboard/area/AreaCreate')));
+
+// areas
+const Templates = Loadable(lazy(() => import('../pages/dashboard/template')));
+const TemplateCreate = Loadable(lazy(() => import('../pages/dashboard/template/TemplateCreate')));
 
 // users
 const User = Loadable(lazy(() => import('../pages/dashboard/user')));
