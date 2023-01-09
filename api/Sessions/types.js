@@ -8,4 +8,11 @@ export default `
     createdAt: String
     updatedAt: String
   }
+
+  input SessionInput {
+    _id: String
+    title: String
+    startTime: String
+    endTime: String
+  }
 `;

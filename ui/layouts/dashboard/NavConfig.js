@@ -17,11 +17,11 @@ const navConfig = [
         path: `${PATH_DASHBOARD.analytics}`,
         icon: getIcon('eva:pie-chart-2-fill')
       },
-      {
-        title: 'documents',
-        path: `${PATH_DASHBOARD.document.root}`,
-        icon: getIcon('gala:file-doc')
-      },
+      // {
+      //   title: 'documents',
+      //   path: `${PATH_DASHBOARD.document.root}`,
+      //   icon: getIcon('gala:file-doc')
+      // },
       {
         title: 'sessions',
         path: `${PATH_DASHBOARD.session.root}`,
@@ -36,6 +36,11 @@ const navConfig = [
         title: 'areas',
         path: `${PATH_DASHBOARD.area.root}`,
         icon: getIcon('mdi:folder-special')
+      },
+      {
+        title: 'templates',
+        path: `${PATH_DASHBOARD.template.root}`,
+        icon: getIcon('fluent:mail-template-20-regular')
       }
     ]
   },

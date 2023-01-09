@@ -1,0 +1,62 @@
+mutation addTemplate($template: TemplateInput) {
+	addTemplate(template: $template) {
+		_id
+		title
+		location {
+			_id
+			title
+			address
+		}
+		sessions {
+			_id
+			title
+			startTime
+			endTime
+		}
+		days {
+			_id
+			title
+		}
+		areas {
+			_id
+			title
+			alternateName
+		}
+		staff
+		allocationType
+	}
+}
+
+mutation updateTemplate($template: TemplateInput) {
+	updateTemplate(template: $template) {
+		_id
+		title
+		location {
+			_id
+			title
+		}
+		sessions {
+			_id
+			title
+			startTime
+			endTime
+		}
+		days {
+			_id
+			title
+		}
+		areas {
+			_id
+			title
+			alternateName
+		}
+		staff
+		allocationType
+	}
+}
+
+mutation removeTemplate($_id: String!) {
+	removeTemplate(_id: $_id) {
+		_id
+	}
+}

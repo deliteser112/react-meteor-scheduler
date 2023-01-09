@@ -54,7 +54,7 @@ export default function LocationNewForm({ isEdit, currentLocation, entities }) {
     () => ({
       title: currentLocation?.title || '',
       address: currentLocation?.address || '',
-      entity: currentLocation?.entity || []
+      entity: currentLocation?.entity?._id || ''
     }),
     [currentLocation]
   );
@@ -82,7 +82,6 @@ export default function LocationNewForm({ isEdit, currentLocation, entities }) {
 
   const onSubmit = async (values) => {
     try {
-      console.log('Values:', values);
       const { title, address, entity } = values;
 
       const entityData = entities.find((ent) => ent._id === entity);

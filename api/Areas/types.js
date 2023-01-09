@@ -6,4 +6,10 @@ export default `
     createdAt: String
     updatedAt: String
   }
+
+  input AreaInput {
+    _id: String
+    title: String
+    alternateName: String
+  }
 `;

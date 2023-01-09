@@ -7,11 +7,11 @@ import { useMutation } from '@apollo/react-hooks';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { capitalCase, sentenceCase } from 'change-case';
+import React, { useEffect, useMemo, useState } from 'react';
+import { sentenceCase } from 'change-case';
 
 // @mui
-import { Autocomplete, Box, Card, Checkbox, FormControlLabel, Stack, TextField, Switch } from '@mui/material';
+import { Autocomplete, Card, Checkbox, FormControlLabel, Stack, TextField, Switch } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { LoadingButton } from '@mui/lab';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
@@ -20,17 +20,10 @@ import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 // routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
 
-// utils
-import { fData } from '../../../utils/formatNumber';
-import resizeBase64Img from '../../../utils/resizeBase64Img';
-
 // mutations & queries
 import { updateUser as updateUserMutation } from '../../../_mutations/Users.gql';
 import { users as usersQuery } from '../../../_queries/Users.gql';
 
-// components
-import Iconify from '../../../components/Iconify';
-import Label from '../../../components/Label';
 // forms
 import { FormProvider, RHFTextField, RHFUploadAvatar } from '../../../components/hook-form';
 
