@@ -27,6 +27,7 @@ export default function SessionCreate() {
 
   const { data } = useQuery(editSessionQuery, { variables: { _id: sessionId } });
   const currentSession = (isEdit && data && data.session) || {};
+  console.log('currentSession', currentSession);
   return (
     <Page title="Session">
       <Container maxWidth="lg">
@@ -35,7 +36,7 @@ export default function SessionCreate() {
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
             { name: 'Sessions', href: PATH_DASHBOARD.session.root },
-            { name: isEdit ? 'Edit Session' : 'New Session' },
+            { name: isEdit ? 'Edit Session' : 'New Session' }
           ]}
           action={
             <Button
