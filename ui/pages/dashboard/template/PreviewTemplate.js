@@ -73,24 +73,9 @@ const Clone = styled(Item)`
     display: none !important;
   }
 `;
-
-const Handle = styled.div`
-  display: flex;
-  align-items: center;
-  align-content: center;
-  user-select: none;
-  margin: -0.5rem 0.5rem -0.5rem -0.5rem;
-  padding: 0.5rem;
-  line-height: 1.5;
-  border-radius: 3px 0 0 3px;
-  background: #fff;
-  border-right: 1px solid #ddd;
-  color: #000;
-`;
-
 const List = styled.div`
   border: 1px ${(props) => (props.isDraggingOver ? 'dashed #000' : 'solid #ddd')};
-  background: #fff;
+
   padding: 0;
   flex: 0 0 150px;
   font-family: sans-serif;
@@ -102,11 +87,12 @@ const Kiosk = styled(List)`
   right: 0;
   bottom: 0;
   width: 200px;
+  padding-top: 100px;
 `;
 
 const Cell = styled(List)`
   margin: 0px;
-  background: #eee;
+  background-color: ${(props) => (props.isDropDisabled ? 'lightgrey' : '#ffeb9c')};
   max-width: 250px;
 `;
 
@@ -183,15 +169,12 @@ function PreviewTemplate() {
         setScheduleData([...tmpData]);
         break;
       case 'ITEMS':
-        console.log('BEFORE:', tmpData[dR][dC], ITEMS);
         tmpData[dR][dC] = copy(ITEMS, tmpData[dR][dC], source, destination);
-        console.log('AFTER:', tmpData[dR][dC]);
         setScheduleData([...tmpData]);
         break;
       default:
         const movedResult = move(tmpData[sR][sC], tmpData[dR][dC], source, destination, tmpData);
 
-        console.log('MoveRESULT:', movedResult);
         setScheduleData([...movedResult]);
         break;
     }
@@ -234,9 +217,17 @@ function PreviewTemplate() {
             <div key={`row_${rowIdx}`} style={{ display: 'flex' }}>
               {rows.map((list, colIdx) => {
                 return (
-                  <Droppable key={`${rowIdx}_${colIdx}`} droppableId={`${rowIdx}_${colIdx}`}>
+                  <Droppable
+                    key={`${rowIdx}_${colIdx}`}
+                    droppableId={`${rowIdx}_${colIdx}`}
+                    isDropDisabled={rowIdx === colIdx}
+                  >
                     {(provided, snapshot) => (
-                      <Cell innerRef={provided.innerRef} isDraggingOver={snapshot.isDraggingOver}>
+                      <Cell
+                        innerRef={provided.innerRef}
+                        isDraggingOver={snapshot.isDraggingOver}
+                        isDropDisabled={rowIdx === colIdx}
+                      >
                         {list.length
                           ? list.map((item, index) => (
                               <Draggable key={item.id} draggableId={item.id} index={index}>
@@ -269,7 +260,7 @@ function PreviewTemplate() {
                               </Draggable>
                             ))
                           : !provided.placeholder && <Notice>.</Notice>}
-                        {provided.placeholder}
+                        {/* {provided.placeholder} */}
                       </Cell>
                     )}
                   </Droppable>
