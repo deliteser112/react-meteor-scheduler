@@ -67,6 +67,8 @@ export default function Router() {
         { path: 'templates', element: <Templates /> },
         { path: 'templates/create', element: <TemplateCreate /> },
         { path: 'templates/:templateId/edit', element: <TemplateCreate /> },
+        { path: 'templates/preview', element: <PreviewTemplate /> },
+        
 
         // Admin/entities
         {
@@ -205,6 +207,8 @@ const AreaCreate = Loadable(lazy(() => import('../pages/dashboard/area/AreaCreat
 // areas
 const Templates = Loadable(lazy(() => import('../pages/dashboard/template')));
 const TemplateCreate = Loadable(lazy(() => import('../pages/dashboard/template/TemplateCreate')));
+
+const PreviewTemplate = Loadable(lazy(() => import('../pages/dashboard/template/PreviewTemplate')));
 
 // users
 const User = Loadable(lazy(() => import('../pages/dashboard/user')));

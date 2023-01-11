@@ -31,6 +31,7 @@ import {
   updateSession as updateSessionMutation
 } from '../../../_mutations/Sessions.gql';
 import { sessions as sessionsQuery } from '../../../_queries/Sessions.gql';
+import { SentimentSatisfiedTwoTone } from '@mui/icons-material';
 
 // ----------------------------------------------------------------------
 
@@ -59,16 +60,12 @@ export default function SessionNewEditForm({ isEdit, currentSession }) {
 
   const NewEntitySchema = Yup.object().shape({
     title: Yup.string().required('Title is required'),
-    // startTime: Yup.string().required('Start Time is required'),
-    // endTime: Yup.string().required('End Time is required'),
     description: Yup.string().required('Description is required')
   });
 
   const defaultValues = useMemo(
     () => ({
       title: currentSession?.title || '',
-      startTime: currentSession?.startTime || '',
-      endTime: currentSession?.endTime || '',
       description: currentSession?.description || ''
     }),
     [currentSession]
@@ -88,6 +85,9 @@ export default function SessionNewEditForm({ isEdit, currentSession }) {
 
   useEffect(() => {
     if (isEdit && currentSession) {
+      const { startTime, endTime } = currentSession;
+      setStartTime(startTime);
+      setEndTime(endTime);
       reset(defaultValues);
     }
     if (!isEdit) {
@@ -97,10 +97,6 @@ export default function SessionNewEditForm({ isEdit, currentSession }) {
 
   const onSubmit = async (values) => {
     try {
-      // const time = new Date(endTime.toString()).getHours();
-      // const min = new Date(endTime.toString()).getMinutes();
-      // console.log(endTime, time, min);
-
       const { description, title } = values;
 
       if (!startTime || !endTime) {

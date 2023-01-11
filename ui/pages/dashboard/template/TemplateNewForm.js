@@ -156,6 +156,8 @@ export default function TemplateNewForm({ isEdit, currentTemplate, locations, se
         allocationType
       };
 
+      console.log(templateToAddOrUpdate);
+
       if (isEdit) {
         templateToAddOrUpdate._id = currentTemplate._id;
       }
