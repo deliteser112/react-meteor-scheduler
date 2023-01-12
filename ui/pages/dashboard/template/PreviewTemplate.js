@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import uuid from 'uuid/v4';
 import styled from 'styled-components';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-// import console = require('console');
 
 // a little function to help us with reordering the result
 const reorder = (list, startIndex, endIndex) => {
@@ -43,8 +42,8 @@ const move = (source, destination, droppableSource, droppableDestination, source
     const dR = droppableDestination.droppableId.split('_')[0];
     const dC = droppableDestination.droppableId.split('_')[1];
 
-    sourceData[sR][sC] = sourceClone;
-    sourceData[dR][dC] = destClone;
+    sourceData[sR][sC].list = sourceClone;
+    sourceData[dR][dC].list = destClone;
   }
 
   return sourceData;
@@ -65,7 +64,9 @@ const Item = styled.div`
   line-height: 1.5;
   border-radius: 3px;
   background: #fff;
+  max-width: 150px;
   border: 1px ${(props) => (props.isDragging ? 'dashed #4099ff' : 'solid #ddd')};
+  box-sizing: border-box;
 `;
 
 const Clone = styled(Item)`
@@ -91,7 +92,7 @@ const Kiosk = styled(List)`
 `;
 
 const Cell = styled(List)`
-  margin: 0px;
+  padding: 2px;
   background-color: ${(props) => (props.isDropDisabled ? 'lightgrey' : '#ffeb9c')};
   max-width: 250px;
 `;
@@ -101,47 +102,57 @@ const Notice = styled.div`
   align-items: center;
   align-content: center;
   justify-content: center;
-  padding: 0.5rem;
   margin: 0;
   border: 1px solid transparent;
   line-height: 1.5;
   color: #aaa;
+  user-select: none;
 `;
 
 const ITEMS = [
   {
     _id: 'item_0',
     id: uuid(),
-    content: 'Headline'
+    content: 'Olgica Krsteva'
   },
   {
     _id: 'item_1',
     id: uuid(),
-    content: 'Copy'
+    content: 'Daniel Lewis'
   },
   {
     _id: 'item_2',
     id: uuid(),
-    content: 'Image'
+    content: 'Alexander Rydin'
   },
   {
     _id: 'item_3',
     id: uuid(),
-    content: 'Slideshow'
+    content: 'Viktoriia Chubatiuk'
   },
   {
     _id: 'item_4',
     id: uuid(),
-    content: 'Quote'
+    content: 'Illia Voloshenko'
   }
 ];
 
 function PreviewTemplate() {
   const [scheduleData, setScheduleData] = useState([]);
 
+  const [isBlocking, setIsBlocking] = useState(false);
+  const [allocationType, setAllocationType] = useState(false);
+
+  const handleIsBlocking = () => {
+    setIsBlocking(!isBlocking);
+  };
+
+  const handleAllocationType = () => {
+    setAllocationType(!allocationType);
+  };
+
   useEffect(() => {
     const tables = generateTable(15, 7);
-    console.log('TABLES:', tables[0][0]);
     setScheduleData([...tables]);
   }, []);
 
@@ -161,19 +172,31 @@ function PreviewTemplate() {
     const dR = destination.droppableId.split('_')[0];
     const dC = destination.droppableId.split('_')[1];
 
-    const tmpData = scheduleData;
+    const sche = scheduleData;
+    const isEmpty = !sche[dR][dC].list.length;
+
     switch (source.droppableId) {
       case destination.droppableId:
-        tmpData[dR][dC] = reorder(tmpData[sR][sC], source.index, destination.index);
+        sche[dR][dC].list = reorder(sche[sR][sC].list, source.index, destination.index);
 
-        setScheduleData([...tmpData]);
+        setScheduleData([...sche]);
         break;
       case 'ITEMS':
-        tmpData[dR][dC] = copy(ITEMS, tmpData[dR][dC], source, destination);
-        setScheduleData([...tmpData]);
+        if (isEmpty) {
+          sche[dR][dC].list = copy(ITEMS, sche[dR][dC].list, source, destination);
+        } else if (allocationType) {
+          sche[dR][dC].list = copy(ITEMS, sche[dR][dC].list, source, destination);
+        }
+
+        setScheduleData([...sche]);
         break;
       default:
-        const movedResult = move(tmpData[sR][sC], tmpData[dR][dC], source, destination, tmpData);
+        let movedResult = sche;
+        if (isEmpty) {
+          movedResult = move(sche[sR][sC].list, sche[dR][dC].list, source, destination, sche);
+        } else if (allocationType) {
+          movedResult = move(sche[sR][sC].list, sche[dR][dC].list, source, destination, sche);
+        }
 
         setScheduleData([...movedResult]);
         break;
@@ -181,7 +204,7 @@ function PreviewTemplate() {
   };
 
   const generateTable = (rows, cols) =>
-    Array.from({ length: rows }).map(() => Array.from({ length: cols }).map(() => []));
+    Array.from({ length: rows }).map(() => Array.from({ length: cols }).map(() => ({ list: [], isBlocked: false })));
 
   // Normally you would want to split things out into separate components.
   // But in this example everything is just done in one place for simplicity
@@ -190,10 +213,28 @@ function PreviewTemplate() {
       <Droppable droppableId="ITEMS" isDropDisabled={true}>
         {(provided, snapshot) => (
           <Kiosk innerRef={provided.innerRef} isDraggingOver={snapshot.isDraggingOver}>
+            <div>
+              <label>
+                <input type="checkbox" checked={isBlocking} onChange={handleIsBlocking} style={{ marginBottom: 20 }} />
+                Blocked Out
+              </label>
+            </div>
+            <div>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={allocationType}
+                  onChange={handleAllocationType}
+                  style={{ marginBottom: 20 }}
+                />
+                Multiple
+              </label>
+            </div>
+
             {ITEMS.map((item, index) => (
               <Draggable key={item.id} draggableId={item.id} index={index}>
                 {(provided, snapshot) => (
-                  <React.Fragment>
+                  <>
                     <Item
                       innerRef={provided.innerRef}
                       {...provided.draggableProps}
@@ -204,7 +245,7 @@ function PreviewTemplate() {
                       {item.content}
                     </Item>
                     {snapshot.isDragging && <Clone>{item.content}</Clone>}
-                  </React.Fragment>
+                  </>
                 )}
               </Draggable>
             ))}
@@ -215,18 +256,22 @@ function PreviewTemplate() {
         {scheduleData.map((rows, rowIdx) => {
           return (
             <div key={`row_${rowIdx}`} style={{ display: 'flex' }}>
-              {rows.map((list, colIdx) => {
+              {rows.map(({ list, isBlocked }, colIdx) => {
                 return (
-                  <Droppable
-                    key={`${rowIdx}_${colIdx}`}
-                    droppableId={`${rowIdx}_${colIdx}`}
-                    isDropDisabled={rowIdx === colIdx}
-                  >
+                  <Droppable key={`${rowIdx}_${colIdx}`} droppableId={`${rowIdx}_${colIdx}`} isDropDisabled={isBlocked}>
                     {(provided, snapshot) => (
                       <Cell
                         innerRef={provided.innerRef}
                         isDraggingOver={snapshot.isDraggingOver}
-                        isDropDisabled={rowIdx === colIdx}
+                        isDropDisabled={isBlocked}
+                        onClick={() => {
+                          if (isBlocking) {
+                            const newScheData = [...scheduleData];
+                            const blockedOut = newScheData[rowIdx][colIdx].isBlocked;
+                            newScheData[rowIdx][colIdx].isBlocked = !blockedOut;
+                            setScheduleData([...newScheData]);
+                          }
+                        }}
                       >
                         {list.length
                           ? list.map((item, index) => (
@@ -242,25 +287,37 @@ function PreviewTemplate() {
                                     <svg
                                       onClick={() => {
                                         const newScheData = [...scheduleData];
-                                        newScheData[rowIdx][colIdx].splice(index, 1);
+                                        newScheData[rowIdx][colIdx].list.splice(index, 1);
                                         setScheduleData(newScheData.filter((group) => group.length));
                                       }}
                                       width="18"
                                       height="18"
                                       viewBox="0 0 18 18"
+                                      style={{
+                                        cursor: 'pointer'
+                                      }}
                                     >
                                       <path
                                         fill="currentColor"
                                         d="M6.4 19L5 17.6l5.6-5.6L5 6.4L6.4 5l5.6 5.6L17.6 5L19 6.4L13.4 12l5.6 5.6l-1.4 1.4l-5.6-5.6Z"
                                       />
                                     </svg>
-                                    {item.content}
+                                    <div
+                                      style={{
+                                        maxWidth: 135,
+                                        whiteSpace: 'nowrap',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis'
+                                      }}
+                                    >
+                                      {item.content}
+                                    </div>
                                   </Item>
                                 )}
                               </Draggable>
                             ))
                           : !provided.placeholder && <Notice>.</Notice>}
-                        {/* {provided.placeholder} */}
+                        {provided.placeholder}
                       </Cell>
                     )}
                   </Droppable>
