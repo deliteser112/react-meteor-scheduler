@@ -64,7 +64,7 @@ const Item = styled.div`
   line-height: 1.5;
   border-radius: 3px;
   background: #fff;
-  max-width: 145px;
+  max-width: 150px;
   border: 1px ${(props) => (props.isDragging ? 'dashed #4099ff' : 'solid #ddd')};
   box-sizing: border-box;
 `;
@@ -139,15 +139,20 @@ const ITEMS = [
 
 function PreviewTemplate() {
   const [scheduleData, setScheduleData] = useState([]);
+
   const [isBlocking, setIsBlocking] = useState(false);
+  const [allocationType, setAllocationType] = useState(false);
 
   const handleIsBlocking = () => {
     setIsBlocking(!isBlocking);
   };
 
+  const handleAllocationType = () => {
+    setAllocationType(!allocationType);
+  };
+
   useEffect(() => {
     const tables = generateTable(15, 7);
-    console.log('TABLES:', tables);
     setScheduleData([...tables]);
   }, []);
 
@@ -167,20 +172,31 @@ function PreviewTemplate() {
     const dR = destination.droppableId.split('_')[0];
     const dC = destination.droppableId.split('_')[1];
 
-    const tmpData = scheduleData;
+    const sche = scheduleData;
+    const isEmpty = !sche[dR][dC].list.length;
+
     switch (source.droppableId) {
       case destination.droppableId:
-        tmpData[dR][dC].list = reorder(tmpData[sR][sC].list, source.index, destination.index);
+        sche[dR][dC].list = reorder(sche[sR][sC].list, source.index, destination.index);
 
-        setScheduleData([...tmpData]);
+        setScheduleData([...sche]);
         break;
       case 'ITEMS':
-        tmpData[dR][dC].list = copy(ITEMS, tmpData[dR][dC].list, source, destination);
-        console.log('DATAS:', tmpData);
-        setScheduleData([...tmpData]);
+        if (isEmpty) {
+          sche[dR][dC].list = copy(ITEMS, sche[dR][dC].list, source, destination);
+        } else if (allocationType) {
+          sche[dR][dC].list = copy(ITEMS, sche[dR][dC].list, source, destination);
+        }
+
+        setScheduleData([...sche]);
         break;
       default:
-        const movedResult = move(tmpData[sR][sC].list, tmpData[dR][dC].list, source, destination, tmpData);
+        let movedResult = sche;
+        if (isEmpty) {
+          movedResult = move(sche[sR][sC].list, sche[dR][dC].list, source, destination, sche);
+        } else if (allocationType) {
+          movedResult = move(sche[sR][sC].list, sche[dR][dC].list, source, destination, sche);
+        }
 
         setScheduleData([...movedResult]);
         break;
@@ -197,10 +213,24 @@ function PreviewTemplate() {
       <Droppable droppableId="ITEMS" isDropDisabled={true}>
         {(provided, snapshot) => (
           <Kiosk innerRef={provided.innerRef} isDraggingOver={snapshot.isDraggingOver}>
-            <label>
-              <input type="checkbox" checked={isBlocking} onChange={handleIsBlocking} style={{ marginBottom: 20 }} />
-              Blocked Out
-            </label>
+            <div>
+              <label>
+                <input type="checkbox" checked={isBlocking} onChange={handleIsBlocking} style={{ marginBottom: 20 }} />
+                Blocked Out
+              </label>
+            </div>
+            <div>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={allocationType}
+                  onChange={handleAllocationType}
+                  style={{ marginBottom: 20 }}
+                />
+                Multiple
+              </label>
+            </div>
+
             {ITEMS.map((item, index) => (
               <Draggable key={item.id} draggableId={item.id} index={index}>
                 {(provided, snapshot) => (
@@ -237,7 +267,8 @@ function PreviewTemplate() {
                         onClick={() => {
                           if (isBlocking) {
                             const newScheData = [...scheduleData];
-                            newScheData[rowIdx][colIdx].isBlocked = true;
+                            const blockedOut = newScheData[rowIdx][colIdx].isBlocked;
+                            newScheData[rowIdx][colIdx].isBlocked = !blockedOut;
                             setScheduleData([...newScheData]);
                           }
                         }}
@@ -262,6 +293,9 @@ function PreviewTemplate() {
                                       width="18"
                                       height="18"
                                       viewBox="0 0 18 18"
+                                      style={{
+                                        cursor: 'pointer'
+                                      }}
                                     >
                                       <path
                                         fill="currentColor"
@@ -270,7 +304,7 @@ function PreviewTemplate() {
                                     </svg>
                                     <div
                                       style={{
-                                        maxWidth: 125,
+                                        maxWidth: 135,
                                         whiteSpace: 'nowrap',
                                         overflow: 'hidden',
                                         textOverflow: 'ellipsis'
@@ -283,7 +317,7 @@ function PreviewTemplate() {
                               </Draggable>
                             ))
                           : !provided.placeholder && <Notice>.</Notice>}
-                        {/* {provided.placeholder} */}
+                        {provided.placeholder}
                       </Cell>
                     )}
                   </Droppable>
