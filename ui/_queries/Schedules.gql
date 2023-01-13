@@ -1,0 +1,26 @@
+#import "../_fragments/Schedules.gql"
+
+query schedules {
+	schedules {
+		_id
+		title
+		startDate
+		endDate
+		templateId
+		state
+		createdAt
+		updatedAt
+	}
+}
+
+query editSchedule($_id: String) {
+	schedule(_id: $_id) {
+		...ScheduleAttributes
+	}
+}
+
+query schedule($_id: String, $sortBy: String) {
+	schedule(_id: $_id) {
+		...ScheduleAttributes
+	}
+}

@@ -43,49 +43,56 @@ export const PATH_DASHBOARD = {
   document: {
     root: path(ROOTS_DASHBOARD, '/documents'),
     create: path(ROOTS_DASHBOARD, '/documents/create'),
-    edit: (name) => path(ROOTS_DASHBOARD, `/documents/${name}/edit`),
+    edit: (name) => path(ROOTS_DASHBOARD, `/documents/${name}/edit`)
   },
 
   // sessions
   session: {
     root: path(ROOTS_DASHBOARD, '/sessions'),
     create: path(ROOTS_DASHBOARD, '/sessions/create'),
-    edit: (name) => path(ROOTS_DASHBOARD, `/sessions/${name}/edit`),
+    edit: (name) => path(ROOTS_DASHBOARD, `/sessions/${name}/edit`)
   },
 
   // entities
   entity: {
     root: path(ROOTS_DASHBOARD, '/entities'),
     create: path(ROOTS_DASHBOARD, '/entities/create'),
-    edit: (name) => path(ROOTS_DASHBOARD, `/entities/${name}/edit`),
+    edit: (name) => path(ROOTS_DASHBOARD, `/entities/${name}/edit`)
   },
 
   // locations
   location: {
     root: path(ROOTS_DASHBOARD, '/locations'),
     create: path(ROOTS_DASHBOARD, '/locations/create'),
-    edit: (name) => path(ROOTS_DASHBOARD, `/locations/${name}/edit`),
+    edit: (name) => path(ROOTS_DASHBOARD, `/locations/${name}/edit`)
   },
 
   // areas
   area: {
     root: path(ROOTS_DASHBOARD, '/areas'),
     create: path(ROOTS_DASHBOARD, '/areas/create'),
-    edit: (name) => path(ROOTS_DASHBOARD, `/areas/${name}/edit`),
+    edit: (name) => path(ROOTS_DASHBOARD, `/areas/${name}/edit`)
   },
 
   // template
   template: {
     root: path(ROOTS_DASHBOARD, '/templates'),
     create: path(ROOTS_DASHBOARD, '/templates/create'),
-    edit: (name) => path(ROOTS_DASHBOARD, `/templates/${name}/edit`),
+    edit: (name) => path(ROOTS_DASHBOARD, `/templates/${name}/edit`)
+  },
+
+  // schedule
+  schedule: {
+    root: path(ROOTS_DASHBOARD, '/schedules'),
+    create: path(ROOTS_DASHBOARD, '/schedules/create'),
+    edit: (name) => path(ROOTS_DASHBOARD, `/schedules/${name}/edit`)
   },
 
   // users
   user: {
     root: path(ROOTS_DASHBOARD, '/users'),
     edit: (name) => path(ROOTS_DASHBOARD, `/users/${name}/edit`),
-    settings: path(ROOTS_DASHBOARD, '/user-settings'),
+    settings: path(ROOTS_DASHBOARD, '/user-settings')
   },
 
   permissionDenied: path(ROOTS_DASHBOARD, '/permission-denied')

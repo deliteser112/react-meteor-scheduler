@@ -1,26 +1,33 @@
 fragment TemplateAttributes on Template {
 	_id
-  title
-  location {
-    _id
-    title
-    address
-  }
-  sessions {
-    _id
-    title
-    startTime
-    endTime
-  }
-  days {
-    _id
-    title
-  }
-  areas {
-    _id
-    title
-    alternateName
-  }
-  staff
-  allocationType
+	title
+	location {
+		_id
+		title
+		address
+	}
+	sessions {
+		_id
+		title
+		startTime
+		endTime
+	}
+	days {
+		_id
+		title
+	}
+	areas {
+		_id
+		title
+		alternateName
+	}
+	staff
+	allocationType
+  sessionDisplayType
+  areaDisplayType
+  staffDisplayType
+	templateTable {
+		list
+		isBlocked
+	}
 }

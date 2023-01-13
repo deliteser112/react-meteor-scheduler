@@ -1,0 +1,18 @@
+#import "../_queries/Schedules.gql"
+mutation addSchedule($schedule: ScheduleInput) {
+	addSchedule(schedule: $schedule) {
+		...ScheduleAttributes
+	}
+}
+
+mutation updateSchedule($schedule: ScheduleInput) {
+	updateSchedule(schedule: $schedule) {
+		...ScheduleAttributes
+	}
+}
+
+mutation removeSchedule($_id: String!) {
+	removeSchedule(_id: $_id) {
+		_id
+	}
+}

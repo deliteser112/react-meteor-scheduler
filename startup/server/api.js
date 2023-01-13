@@ -42,6 +42,11 @@ import TemplateTypes from '../../api/Templates/types';
 import TemplateQueries from '../../api/Templates/queries';
 import TemplateMutations from '../../api/Templates/mutations';
 
+// schedule
+import ScheduleTypes from '../../api/Schedules/types';
+import ScheduleQueries from '../../api/Schedules/queries';
+import ScheduleMutations from '../../api/Schedules/mutations';
+
 import OAuthQueries from '../../api/OAuth/queries';
 
 import '../../api/Documents/server/indexes';
@@ -62,6 +67,7 @@ const schema = {
     ${LocationTypes}
     ${AreaTypes}
     ${TemplateTypes}
+    ${ScheduleTypes}
 
     # user management
     ${UserTypes}
@@ -86,6 +92,9 @@ const schema = {
 
       templates: [Template]
       template(_id: String): Template
+
+      schedules: [Schedule]
+      schedule(_id: String): Schedule
 
       # user management
       user(_id: String): User
@@ -125,6 +134,10 @@ const schema = {
       updateTemplate(template: TemplateInput): Template
       removeTemplate(_id: String!): Template
 
+      addSchedule(schedule: ScheduleInput): Schedule
+      updateSchedule(schedule: ScheduleInput): Schedule
+      removeSchedule(_id: String!): Schedule
+
       # ------------------------------- ### ---------------------------------- #
       # user management
       updateUser(user: UserInput): User
@@ -150,6 +163,7 @@ const schema = {
       ...LocationQueries,
       ...AreaQueries,
       ...TemplateQueries,
+      ...ScheduleQueries,
 
       // user management
       ...UserQueries,
@@ -166,6 +180,7 @@ const schema = {
       ...LocationMutations,
       ...AreaMutations,
       ...TemplateMutations,
+      ...ScheduleMutations,
 
       // user management
       ...UserMutations,
