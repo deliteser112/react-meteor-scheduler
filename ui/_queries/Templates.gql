@@ -1,4 +1,4 @@
-# import "../_fragments/Templates.gql"
+#import "../_fragments/Templates.gql"
 
 query templates {
 	templates {
@@ -33,58 +33,12 @@ query templates {
 
 query editTemplate($_id: String) {
 	template(_id: $_id) {
-		_id
-		title
-		location {
-			_id
-			title
-			address
-		}
-		sessions {
-			_id
-			title
-			startTime
-			endTime
-		}
-		days {
-			_id
-			title
-		}
-		areas {
-			_id
-			title
-			alternateName
-		}
-		staff
-		allocationType
+		...TemplateAttributes
 	}
 }
 
 query template($_id: String, $sortBy: String) {
 	template(_id: $_id) {
-		_id
-		title
-		location {
-			_id
-			title
-			address
-		}
-		sessions {
-			_id
-			title
-			startTime
-			endTime
-		}
-		days {
-			_id
-			title
-		}
-		areas {
-			_id
-			title
-			alternateName
-		}
-		staff
-		allocationType
+		...TemplateAttributes
 	}
 }

@@ -32,6 +32,8 @@ export default function TemplateCreate() {
   const { data } = useQuery(editTemplateQuery, { variables: { _id: templateId } });
   const currentTemplate = (isEdit && data && data.template) || {};
 
+  console.log(currentTemplate);
+
   // get locations
   const eData = useQuery(locationsQuery).data;
   const locations = (eData && eData.locations) || [];
@@ -48,9 +50,10 @@ export default function TemplateCreate() {
   const uData = useQuery(usersQuery).data;
   const users = (uData && uData.users && uData.users.users) || [];
 
+  console.log('USERS', users);
   return (
     <Page title="Template">
-      <Container maxWidth="lg">
+      <Container maxWidth="xl">
         <HeaderBreadcrumbs
           heading="Templates"
           links={[

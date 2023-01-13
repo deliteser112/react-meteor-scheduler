@@ -68,7 +68,11 @@ export default function Router() {
         { path: 'templates/create', element: <TemplateCreate /> },
         { path: 'templates/:templateId/edit', element: <TemplateCreate /> },
         { path: 'templates/preview', element: <PreviewTemplate /> },
-        
+
+        // schedules
+        { path: 'schedules', element: <Schedules /> },
+        { path: 'schedules/create', element: <ScheduleCreate /> },
+        { path: 'schedules/:scheduleId/edit', element: <ScheduleCreate /> },
 
         // Admin/entities
         {
@@ -204,11 +208,15 @@ const LocationCreate = Loadable(lazy(() => import('../pages/dashboard/location/L
 const Areas = Loadable(lazy(() => import('../pages/dashboard/area')));
 const AreaCreate = Loadable(lazy(() => import('../pages/dashboard/area/AreaCreate')));
 
-// areas
+// templates
 const Templates = Loadable(lazy(() => import('../pages/dashboard/template')));
 const TemplateCreate = Loadable(lazy(() => import('../pages/dashboard/template/TemplateCreate')));
 
 const PreviewTemplate = Loadable(lazy(() => import('../pages/dashboard/template/PreviewTemplate')));
+
+// schedules
+const Schedules = Loadable(lazy(() => import('../pages/dashboard/schedule')));
+const ScheduleCreate = Loadable(lazy(() => import('../pages/dashboard/schedule/ScheduleCreate')));
 
 // users
 const User = Loadable(lazy(() => import('../pages/dashboard/user')));

@@ -13,6 +13,10 @@ export default {
       areas: template.areas,
       staff: template.staff,
       allocationType: template.allocationType,
+      templateTable: template.templateTable,
+      sessionDisplayType: template.sessionDisplayType,
+      areaDisplayType: template.areaDisplayType,
+      staffDisplayType: template.staffDisplayType,
       createdAt: date,
       updatedAt: date
     });

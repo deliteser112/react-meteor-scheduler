@@ -1,0 +1,12 @@
+fragment ScheduleAttributes on Schedule {
+	_id
+	title
+	startDate
+	endDate
+	templateId
+	state
+	scheduleTable {
+		list
+		isBlocked
+	}
+}

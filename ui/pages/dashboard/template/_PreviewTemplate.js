@@ -1,446 +1,444 @@
-import React, { useState, useEffect, Fragment } from 'react';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import React, { useState, useEffect } from 'react';
+import uuid from 'uuid/v4';
 import styled from 'styled-components';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
-const ITEM_TYPES = {
-  CARD: 'card',
-  TASK: 'task'
+// a little function to help us with reordering the result
+const reorder = (list, startIndex, endIndex) => {
+  const result = Array.from(list);
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+
+  return result;
+};
+/**
+ * Moves an item from one list to another list.
+ */
+const copy = (source, destination, droppableSource, droppableDestination) => {
+  const sourceClone = Array.from(source);
+  const destClone = Array.from(destination);
+
+  const item = sourceClone[droppableSource.index];
+  const isExist = destClone.find((dest) => dest._id === item._id);
+
+  if (!isExist) destClone.splice(droppableDestination.index, 0, { ...item, id: uuid() });
+  return destClone;
 };
 
-const DATASET = {
-  tasks: {
-    'task-1': { id: 'task-1', content: 'water plants' },
-    'task-2': { id: 'task-2', content: 'buy oat milk' },
-    'task-3': { id: 'task-3', content: 'build a trello board' },
-    'task-4': { id: 'task-4', content: 'have a beach day' },
-    'task-5': { id: 'task-5', content: 'build tic tac toe' }
-  },
-  cards: {
-    'card-1': {
-      id: 'card-1',
-      title: 'Home Todos',
-      taskIds: ['task-1', 'task-2']
-    },
-    'card-2': {
-      id: 'card-2',
-      title: 'Work Todos',
-      taskIds: ['task-3']
-    },
-    'card-3': { id: 'card-3', title: 'Fun Todos', taskIds: ['task-4'] },
-    'card-4': { id: 'card-4', title: 'Completed', taskIds: ['task-5'] }
-  },
-  cardOrder: ['card-1', 'card-2', 'card-3', 'card-4']
-};
+const move = (source, destination, droppableSource, droppableDestination, sourceData) => {
+  const sourceClone = Array.from(source);
+  const destClone = Array.from(destination);
 
-const Container = styled.div`
-  margin: 2em;
-  display: flex;
-  @media (max-width: 720px) {
-    flex-direction: column;
+  const [removed] = sourceClone.splice(droppableSource.index, 1);
+
+  const isExist = destClone.find((dest) => dest._id === removed._id);
+
+  if (!isExist) {
+    destClone.splice(droppableDestination.index, 0, removed);
+
+    const sR = droppableSource.droppableId.split('_')[0];
+    const sC = droppableSource.droppableId.split('_')[1];
+
+    const dR = droppableDestination.droppableId.split('_')[0];
+    const dC = droppableDestination.droppableId.split('_')[1];
+
+    sourceData[sR][sC].list = sourceClone;
+    sourceData[dR][dC].list = destClone;
   }
-  align-items: center;
-  justify-items: center;
+
+  return sourceData;
+};
+
+const Content = styled.div`
+  margin-right: 200px;
+  padding: 10px;
 `;
-const Menu = styled.div`
-  margin: 2em;
+
+const Item = styled.div`
   display: flex;
-  flex-direction: column;
+  user-select: none;
+  padding: 0;
+  margin: 0;
+  align-items: flex-start;
+  align-content: flex-start;
+  line-height: 1.5;
+  border-radius: 3px;
+  background: #fff;
+  max-width: 150px;
+  border: 1px ${(props) => (props.isDragging ? 'dashed #4099ff' : 'solid #ddd')};
+  box-sizing: border-box;
 `;
-const Note = styled.div`
-  font-size: 0.8em;
-  margin: 20px 0;
+
+const Clone = styled(Item)`
+  + div {
+    display: none !important;
+  }
 `;
-const NewCard = styled.div`
-  font-size: 1em;
-  color: grey;
-  min-width: 100px;
-  text-align: center;
-  cursor: pointer;
+const List = styled.div`
+  border: 1px ${(props) => (props.isDraggingOver ? 'dashed #000' : 'solid #ddd')};
+
+  padding: 0;
+  flex: 0 0 150px;
+  font-family: sans-serif;
+`;
+
+const Kiosk = styled(List)`
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 200px;
+  padding-top: 100px;
+`;
+
+const Cell = styled(List)`
+  padding: 2px;
+  background-color: ${(props) => (props.isDropDisabled ? 'lightgrey' : '#ffeb9c')};
+  max-width: 250px;
+`;
+
+const Notice = styled.div`
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  margin: 0;
+  border: 1px solid transparent;
+  line-height: 1.5;
+  color: #aaa;
+  user-select: none;
 `;
 function PreviewTemplate() {
-  const [dataset, _] = useState(() => {
-    const savedDataset = localStorage.getItem('aleka-trello-board-dataset');
-    const initialValue = JSON.parse(savedDataset);
-    return initialValue || DATASET;
-  });
+  const [scheduleData, setScheduleData] = useState([]);
 
-  const [tasks, setTasks] = useState(dataset.tasks);
-  const [cards, setCards] = useState(dataset.cards);
-  const [cardOrder, setCardOrder] = useState(dataset.cardOrder);
+  const [isBlocking, setIsBlocking] = useState(false);
+  const [allocationType, setAllocationType] = useState(false);
 
-  useEffect(() => {
-    localStorage.setItem('aleka-trello-board-dataset', JSON.stringify({ tasks, cards, cardOrder }));
-  }, [tasks, cards, cardOrder]);
-
-  const onAddNewCard = () => {
-    const newCard = {
-      id: 'card-' + genRandomID(),
-      title: '**New**',
-      taskIds: []
-    };
-    const newCardOrder = Array.from(cardOrder);
-    newCardOrder.unshift(newCard.id);
-    setCards({
-      ...cards,
-      [newCard.id]: newCard
-    });
-    setCardOrder(newCardOrder);
+  const handleIsBlocking = () => {
+    setIsBlocking(!isBlocking);
   };
 
-  return (
-    <Container>
-      <Menu>
-        <Note>
-          you can add, edit, or remove cards & tasks. <br />
-          double click to edit card title or task content. <br />
-          task is removed when content is empty. <br />
-          drag/drop card or task to desired order. <br />
-          your edited changes are saved in local storage.
-        </Note>
-        <NewCard onClick={onAddNewCard}>+ New Card</NewCard>
-      </Menu>
-      <DragDropCards
-        cards={cards}
-        tasks={tasks}
-        cardOrder={cardOrder}
-        setCards={setCards}
-        setTasks={setTasks}
-        setCardOrder={setCardOrder}
-      />
-    </Container>
-  );
-}
+  const handleAllocationType = () => {
+    setAllocationType(!allocationType);
+  };
 
-const CardsContainer = styled.div`
-  margin: 2em;
-  display: flex;
-  @media (max-width: 720px) {
-    flex-direction: column;
-  }
-`;
-function DragDropCards({ cards, tasks, cardOrder, setCards, setTasks, setCardOrder }) {
-  const [editing, setEditing] = useState(null);
+  useEffect(() => {
+    const tables = generateTable(AREAS.length * DAYS.length, SESSIONS.length);
+    setScheduleData([...tables]);
+  }, []);
 
   const onDragEnd = (result) => {
-    const { destination, source, draggableId, type } = result;
+    const { source, destination } = result;
 
-    if (!destination || (destination.droppableId === source.droppableId && destination.index === source.index)) {
+    // dropped outside the list
+    if (!destination) {
       return;
     }
 
-    if (type === ITEM_TYPES.CARD) {
-      reorderCards(source, destination, draggableId);
-    } else {
-      // type === tasks
-      const start = cards[source.droppableId];
-      const finish = cards[destination.droppableId];
-      if (start.id === finish.id) {
-        reorderTasksWithinCard(start, source.index, destination.index, draggableId);
-      } else {
-        moveTask(start, finish, source.index, destination.index, draggableId);
-      }
-    }
-  };
+    console.log('==> result', result);
 
-  const reorderCards = (source, destination, draggableId) => {
-    const newCardOrder = Array.from(cardOrder);
-    newCardOrder.splice(source.index, 1);
-    newCardOrder.splice(destination.index, 0, draggableId);
-    setCardOrder(newCardOrder);
-  };
+    const sR = source.droppableId.split('_')[0];
+    const sC = source.droppableId.split('_')[1];
 
-  const reorderTasksWithinCard = (card, sourceIdx, destinationIdx, draggableId) => {
-    const newTaskIds = Array.from(card.taskIds);
-    newTaskIds.splice(sourceIdx, 1);
-    newTaskIds.splice(destinationIdx, 0, draggableId);
-    setCards({
-      ...cards,
-      [card.id]: {
-        ...card,
-        taskIds: newTaskIds
-      }
-    });
-  };
+    const dR = destination.droppableId.split('_')[0];
+    const dC = destination.droppableId.split('_')[1];
 
-  const moveTask = (start, finish, sourceIdx, destinationIdx, draggableId) => {
-    const startTaskIds = Array.from(start.taskIds);
-    startTaskIds.splice(sourceIdx, 1);
-    const newStart = {
-      ...start,
-      taskIds: startTaskIds
-    };
-    const finishTaskIds = Array.from(finish.taskIds);
-    finishTaskIds.splice(destinationIdx, 0, draggableId);
-    const newFinish = {
-      ...finish,
-      taskIds: finishTaskIds
-    };
-    setCards({
-      ...cards,
-      [newStart.id]: newStart,
-      [newFinish.id]: newFinish
-    });
-  };
+    const sche = scheduleData;
+    const isEmpty = !sche[dR][dC].list.length;
 
-  const onAddNewTask = (cardID, content) => {
-    const newTask = {
-      id: 'task-' + genRandomID(),
-      content
-    };
-    setTasks({
-      ...tasks,
-      [newTask.id]: newTask
-    });
-    const newTaskIds = Array.from(cards[cardID].taskIds);
-    newTaskIds.push(newTask.id);
-    setCards({ ...cards, [cardID]: { ...cards[cardID], taskIds: newTaskIds } });
-  };
+    switch (source.droppableId) {
+      case destination.droppableId:
+        sche[dR][dC].list = reorder(sche[sR][sC].list, source.index, destination.index);
 
-  const onRemoveCard = (cardID) => {
-    const newCardOrder = cardOrder.filter((id) => id !== cardID);
-    setCardOrder(newCardOrder);
-
-    const cardTaskIds = cards[cardID].taskIds;
-    cardTaskIds.forEach((taskID) => delete tasks[taskID]);
-    delete cards[cardID];
-    setCards(cards);
-    setTasks(tasks);
-  };
-
-  const onRemoveTask = (taskID, cardID) => {
-    const newTaskIds = cards[cardID].taskIds.filter((id) => id !== taskID);
-    setCards({ ...cards, [cardID]: { ...cards[cardID], taskIds: newTaskIds } });
-    delete tasks[taskID];
-    setTasks(tasks);
-  };
-
-  const onSaveTitleEdit = (cardID, newTitle) => {
-    if (newTitle !== cards[cardID].title) {
-      setCards({
-        ...cards,
-        [cardID]: {
-          ...cards[cardID],
-          title: newTitle
+        setScheduleData([...sche]);
+        break;
+      case 'ITEMS':
+        if (isEmpty) {
+          sche[dR][dC].list = copy(ITEMS, sche[dR][dC].list, source, destination);
+        } else if (allocationType) {
+          sche[dR][dC].list = copy(ITEMS, sche[dR][dC].list, source, destination);
         }
-      });
+
+        setScheduleData([...sche]);
+        break;
+      default:
+        let movedResult = sche;
+        if (isEmpty) {
+          movedResult = move(sche[sR][sC].list, sche[dR][dC].list, source, destination, sche);
+        } else if (allocationType) {
+          movedResult = move(sche[sR][sC].list, sche[dR][dC].list, source, destination, sche);
+        }
+
+        setScheduleData([...movedResult]);
+        break;
     }
-    setEditing(null);
   };
 
-  const onSaveTaskEdit = (taskID, cardID, newContent) => {
-    if (newContent.trim() === '') {
-      onRemoveTask(taskID, cardID);
-    } else if (newContent !== tasks[taskID].content) {
-      setTasks({
-        ...tasks,
-        [taskID]: { ...tasks[taskID], content: newContent }
-      });
-    }
-    setEditing(null);
-  };
+  const generateTable = (rows, cols) =>
+    Array.from({ length: rows }).map(() => Array.from({ length: cols }).map(() => ({ list: [], isBlocked: false })));
 
+  // Normally you would want to split things out into separate components.
+  // But in this example everything is just done in one place for simplicity
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <Droppable droppableId="all-cards" direction="horizontal" type="card">
-        {(provided) => (
-          <CardsContainer {...provided.droppableProps} ref={provided.innerRef}>
-            {cardOrder.map((id, index) => {
-              const card = cards[id];
-              const cardTasks = card.taskIds.map((taskId) => tasks[taskId]);
-              return (
-                <Card
-                  key={card.id}
-                  card={card}
-                  tasks={cardTasks}
-                  index={index}
-                  onFocusClick={() => onFocusClick(card.id)}
-                  onSaveTitleEdit={(title) => onSaveTitleEdit(card.id, title)}
-                  onRemoveCard={() => onRemoveCard(card.id)}
-                  onAddNewTask={(content) => onAddNewTask(card.id, content)}
-                  onSaveTaskEdit={(taskID, newContent) => onSaveTaskEdit(taskID, card.id, newContent)}
-                  onTitleDoubleClick={() => setEditing(card.id)}
-                  onTaskDoubleClick={(task) => setEditing(task.id)}
-                  isTitleEditing={editing === card.id}
-                  isTaskEditing={(task) => editing === task.id}
+      <Droppable droppableId="ITEMS" isDropDisabled={true}>
+        {(provided, snapshot) => (
+          <Kiosk innerRef={provided.innerRef} isDraggingOver={snapshot.isDraggingOver}>
+            <div>
+              <label>
+                <input type="checkbox" checked={isBlocking} onChange={handleIsBlocking} style={{ marginBottom: 20 }} />
+                Blocked Out - 1
+              </label>
+            </div>
+            <div>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={allocationType}
+                  onChange={handleAllocationType}
+                  style={{ marginBottom: 20 }}
                 />
-              );
-            })}
-            {provided.placeholder}
-          </CardsContainer>
+                Multiple
+              </label>
+            </div>
+
+            {ITEMS.map((item, index) => (
+              <Draggable key={item.id} draggableId={item.id} index={index}>
+                {(provided, snapshot) => (
+                  <>
+                    <Item
+                      innerRef={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                      isDragging={snapshot.isDragging}
+                      style={provided.draggableProps.style}
+                    >
+                      {item.content}
+                    </Item>
+                    {snapshot.isDragging && <Clone>{item.content}</Clone>}
+                  </>
+                )}
+              </Draggable>
+            ))}
+          </Kiosk>
         )}
       </Droppable>
+      <Content>
+        <div style={{ display: 'flex' }}>
+          <div style={{ flex: '0 0 300px' }} />
+          {SESSIONS.map((item) => (
+            <Cell key={item._id} style={{ backgroundColor: '#FFC7CE', color: '#9C0006' }}>
+              {item.title}
+            </Cell>
+          ))}
+        </div>
+        <div style={{ display: 'flex' }}>
+          <div style={{ flex: '0 0 300px' }}>
+            {DAYS.map((day) => (
+              <div key={day._id} style={{ display: 'flex' }}>
+                <div style={{ flex: '0 0 150px', borderTop: '1px solid #aaa' }}>{day.title}</div>
+                <div style={{ flex: '0 0 150px' }}>
+                  {AREAS.map((area) => (
+                    <Cell key={area._id} style={{ backgroundColor: '#C6EFCE' }}>
+                      <Notice style={{ color: '#006100' }}>{area.title}</Notice>
+                    </Cell>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div>
+            {scheduleData.map((rows, rowIdx) => {
+              return (
+                <div key={`row_${rowIdx}`} style={{ display: 'flex' }}>
+                  {rows.map(({ list, isBlocked }, colIdx) => {
+                    return (
+                      <Droppable
+                        key={`${rowIdx}_${colIdx}`}
+                        droppableId={`${rowIdx}_${colIdx}`}
+                        isDropDisabled={isBlocked}
+                      >
+                        {(provided, snapshot) => (
+                          <Cell
+                            innerRef={provided.innerRef}
+                            isDraggingOver={snapshot.isDraggingOver}
+                            isDropDisabled={isBlocked}
+                            onClick={() => {
+                              if (isBlocking) {
+                                const newScheData = [...scheduleData];
+                                const blockedOut = newScheData[rowIdx][colIdx].isBlocked;
+                                newScheData[rowIdx][colIdx].isBlocked = !blockedOut;
+                                setScheduleData([...newScheData]);
+                              }
+                            }}
+                          >
+                            {list.length
+                              ? list.map((item, index) => (
+                                  <Draggable key={item.id} draggableId={item.id} index={index}>
+                                    {(provided, snapshot) => (
+                                      <Item
+                                        innerRef={provided.innerRef}
+                                        {...provided.draggableProps}
+                                        {...provided.dragHandleProps}
+                                        isDragging={snapshot.isDragging}
+                                        style={provided.draggableProps.style}
+                                      >
+                                        <svg
+                                          onClick={() => {
+                                            const newScheData = [...scheduleData];
+                                            newScheData[rowIdx][colIdx].list.splice(index, 1);
+                                            setScheduleData(newScheData.filter((group) => group.length));
+                                          }}
+                                          width="18"
+                                          height="18"
+                                          viewBox="0 0 18 18"
+                                          style={{
+                                            cursor: 'pointer'
+                                          }}
+                                        >
+                                          <path
+                                            fill="currentColor"
+                                            d="M6.4 19L5 17.6l5.6-5.6L5 6.4L6.4 5l5.6 5.6L17.6 5L19 6.4L13.4 12l5.6 5.6l-1.4 1.4l-5.6-5.6Z"
+                                          />
+                                        </svg>
+                                        <div
+                                          style={{
+                                            maxWidth: 135,
+                                            whiteSpace: 'nowrap',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis'
+                                          }}
+                                        >
+                                          {item.content}
+                                        </div>
+                                      </Item>
+                                    )}
+                                  </Draggable>
+                                ))
+                              : !provided.placeholder && <Notice>-</Notice>}
+                            {provided.placeholder}
+                          </Cell>
+                        )}
+                      </Droppable>
+                    );
+                  })}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </Content>
     </DragDropContext>
   );
 }
 
-const TitleBar = styled.div`
-  display: flex;
-  justify-content: space-between;
-`;
-const Title = styled.h3`
-  padding: 8px;
-  font-size: 1.5em;
-  text-overflow: ellipsis;
-`;
-const Cross = styled.div`
-  padding: 8px 12px;
-  cursor: pointer;
-  text-align: right;
-  color: grey;
-`;
-const CardContainer = styled.div`
-  margin: 8px;
-  border: 1px solid lightgrey;
-  border-radius: 4px;
-  width: 220px;
-  display: flex;
-  flex-direction: column;
-  background-color: white;
-`;
-const TaskList = styled.div`
-  padding: 8px;
-  background-color: ${(props) => (props.isDraggingOver ? 'skyblue' : 'inherit')};
-  min-height: 100px;
-  height: 100%;
-`;
-const NewTaskBar = styled.div`
-  display: flex;
-`;
-const NewTaskButton = styled.div`
-  padding: 8px;
-  margin: 8px;
-  cursor: pointer;
-  text-align: right;
-  color: grey;
-`;
-
-function Card(props) {
-  const [isAddingNewTask, setIsAddingNewTask] = useState(false);
-  const onSaveTask = (content) => {
-    if (content.trim() !== '') {
-      props.onAddNewTask(content);
-    }
-    setIsAddingNewTask(false);
-  };
-
-  return (
-    <Draggable draggableId={props.card.id} index={props.index}>
-      {(provided) => (
-        <CardContainer ref={provided.innerRef} {...provided.draggableProps} id={props.card.id}>
-          <TitleBar>
-            {props.isTitleEditing ? (
-              <EditInput
-                key={props.card.id}
-                value={props.card.title}
-                onSave={props.onSaveTitleEdit}
-                fontSize="1.5em"
-                margin="20px 0 20px 8px"
-              />
-            ) : (
-              <Title onDoubleClick={props.onTitleDoubleClick} {...provided.dragHandleProps}>
-                {props.card.title}
-              </Title>
-            )}
-            <Cross onClick={props.onRemoveCard}>x</Cross>
-          </TitleBar>
-          <Droppable droppableId={props.card.id} type="task">
-            {(provided, snapshot) => (
-              <Fragment>
-                <TaskList ref={provided.innerRef} {...provided.droppableProps} isDraggingOver={snapshot.isDraggingOver}>
-                  {props.tasks.map((task, index) => (
-                    <Task
-                      key={task.id}
-                      task={task}
-                      index={index}
-                      onSaveTaskEdit={(content) => props.onSaveTaskEdit(task.id, content)}
-                      onTaskDoubleClick={() => props.onTaskDoubleClick(task)}
-                      isTaskEditing={props.isTaskEditing(task)}
-                    />
-                  ))}
-                </TaskList>
-                {provided.placeholder}
-              </Fragment>
-            )}
-          </Droppable>
-          <NewTaskBar>
-            {isAddingNewTask ? (
-              <EditInput key="newtask" value="" onSave={onSaveTask} margin="8px" />
-            ) : (
-              <NewTaskButton onClick={() => setIsAddingNewTask(true)}>+ New Task</NewTaskButton>
-            )}
-          </NewTaskBar>
-        </CardContainer>
-      )}
-    </Draggable>
-  );
-}
-
-const TaskContainer = styled.div`
-  display: flex;
-`;
-const TaskContent = styled.div`
-  border: 1px solid lightgrey;
-  padding: 8px;
-  margin-bottom: 8px;
-  border-radius: 2px;
-  background-color: ${(props) => (props.isDragging ? 'lightgreen' : 'white')};
-  width: 100%;
-`;
-function Task(props) {
-  return (
-    <TaskContainer>
-      {props.isTaskEditing ? (
-        <EditInput key={props.task.id} value={props.task.content} onSave={props.onSaveTaskEdit} margin="0 0 8px 0" />
-      ) : (
-        <Draggable draggableId={props.task.id} index={props.index}>
-          {(provided, snapshot) => (
-            <TaskContent
-              {...provided.draggableProps}
-              {...provided.dragHandleProps}
-              ref={provided.innerRef}
-              isDragging={snapshot.isDragging}
-              onDoubleClick={props.onTaskDoubleClick}
-            >
-              {props.task.content}
-            </TaskContent>
-          )}
-        </Draggable>
-      )}
-    </TaskContainer>
-  );
-}
-
-const Input = styled.input`
-  font-size: ${(props) => props.fontSize || 'inherit'};
-  font-family: inherit;
-  margin: ${(props) => props.margin || 'inherit'};
-  padding: 8px;
-  width: 100%;
-`;
-function EditInput(props) {
-  const [val, setVal] = useState(props.value);
-  return (
-    <Input
-      type="text"
-      autoFocus
-      value={val}
-      onChange={(e) => setVal(e.target.value)}
-      onKeyPress={(event) => {
-        if (event.key === 'Enter' || event.key === 'Escape') {
-          props.onSave(val);
-          event.preventDefault();
-          event.stopPropagation();
-        }
-      }}
-      onBlur={() => props.onSave(val)}
-      fontSize={props.fontSize}
-      margin={props.margin}
-    />
-  );
-}
-
-function genRandomID() {
-  return (Math.random() + 1).toString(36).substring(7);
-}
-
 export default PreviewTemplate;
+
+const ITEMS = [
+  {
+    _id: 'item_0',
+    id: uuid(),
+    content: 'Olgica Krsteva'
+  },
+  {
+    _id: 'item_1',
+    id: uuid(),
+    content: 'Daniel Lewis'
+  },
+  {
+    _id: 'item_2',
+    id: uuid(),
+    content: 'Alexander Rydin'
+  },
+  {
+    _id: 'item_3',
+    id: uuid(),
+    content: 'Viktoriia Chubatiuk'
+  },
+  {
+    _id: 'item_4',
+    id: uuid(),
+    content: 'Illia Voloshenko'
+  }
+];
+
+const SESSIONS = [
+  {
+    _id: 1,
+    title: 'Before School 1'
+  },
+  {
+    _id: 2,
+    title: 'Before School 2'
+  },
+  {
+    _id: 3,
+    title: 'Recess 1'
+  },
+  {
+    _id: 4,
+    title: 'Recess 2'
+  },
+  {
+    _id: 5,
+    title: 'Lunch 1'
+  },
+  {
+    _id: 6,
+    title: 'Lunch 2'
+  },
+  {
+    _id: 7,
+    title: 'After School'
+  }
+];
+
+const AREAS = [
+  {
+    _id: 1,
+    title: 'Car Park Gate'
+  },
+  {
+    _id: 2,
+    title: 'Courtyart'
+  },
+  {
+    _id: 3,
+    title: 'Front Gate'
+  },
+  {
+    _id: 4,
+    title: 'Junior Playground'
+  },
+  {
+    _id: 5,
+    title: 'Learning Street'
+  },
+  {
+    _id: 61,
+    title: 'Basketball Court'
+  }
+];
+
+const DAYS = [
+  {
+    _id: 1,
+    title: 'Monday'
+  },
+  {
+    _id: 2,
+    title: 'Tuesday'
+  },
+  {
+    _id: 3,
+    title: 'Wednesday'
+  },
+  {
+    _id: 4,
+    title: 'Thursday'
+  },
+  {
+    _id: 5,
+    title: 'Friday'
+  }
+];

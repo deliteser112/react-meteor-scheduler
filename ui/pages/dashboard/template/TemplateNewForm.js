@@ -25,16 +25,28 @@ import {
   Autocomplete,
   TextField,
   Checkbox,
-  Typography
+  Typography,
+  Switch,
+  FormControlLabel,
+  CircularProgress,
+  Radio,
+  RadioGroup,
+  FormLabel,
+  FormControl
 } from '@mui/material';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 
 // routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
+
+// utils
+import { fTime } from '../../../utils/formatTime';
 // components
 import { FormProvider, RHFSelect, RHFTextField, RHFRadioGroup } from '../../../components/hook-form';
 import Iconify from '../../../components/Iconify';
+
+import PreviewTemplate from './PreviewTemplate';
 
 // mutations
 import {
@@ -53,6 +65,18 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
   marginBottom: theme.spacing(1)
 }));
 
+const LoadingContainer = styled('div')(({ theme }) => ({
+  right: 0,
+  bottom: 0,
+  zIndex: 99999,
+  width: '100%',
+  height: '100%',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  backgroundColor: theme.palette.background.default
+}));
+
 TemplateNewForm.propTypes = {
   isEdit: PropTypes.bool,
   currentTemplate: PropTypes.object,
@@ -69,10 +93,19 @@ export default function TemplateNewForm({ isEdit, currentTemplate, locations, se
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
+  const [templateTable, setTemplateTable] = useState([]);
+
   const [defaultSessions, setDefaultSessions] = useState([]);
   const [defaultDays, setDefaultDays] = useState([]);
   const [defaultAreas, setDefaultAreas] = useState([]);
   const [defaultStaff, setDefaultStaff] = useState([]);
+
+  const [isBlockedOut, setBlockedOut] = useState(false);
+  const [isBlocking, setIsBlocking] = useState(false);
+
+  const [sessionDisplayType, setSessionDisplayType] = useState('title');
+  const [areaDisplayType, setAreaDisplayType] = useState('title');
+  const [staffDisplayType, setStaffDisplayType] = useState('name');
 
   const NewTemplateSchema = Yup.object().shape({
     title: Yup.string().required('Title is required'),
@@ -103,14 +136,32 @@ export default function TemplateNewForm({ isEdit, currentTemplate, locations, se
 
   useEffect(() => {
     if (isEdit && currentTemplate && currentTemplate.location && users.length > 0) {
-      const { location, sessions, days, areas, staff } = currentTemplate;
+      console.log('CURRENTTEmplate', currentTemplate);
+      const {
+        templateTable,
+        sessions,
+        days,
+        areas,
+        staff,
+        sessionDisplayType,
+        areaDisplayType,
+        staffDisplayType
+      } = currentTemplate;
 
       const staffData = staff.map((_id) => users.find((item) => item._id === _id));
-      console.log(staffData);
       setDefaultSessions([...sessions]);
       setDefaultDays([...days]);
       setDefaultAreas([...areas]);
       setDefaultStaff([...staffData]);
+
+      setSessionDisplayType(sessionDisplayType);
+      setAreaDisplayType(areaDisplayType);
+      setStaffDisplayType(staffDisplayType);
+
+      templateTable.forEach((rows) => rows.forEach((col) => delete col.__typename));
+
+      setTemplateTable([...templateTable]);
+      setBlockedOut(true);
       reset(defaultValues);
     }
     if (!isEdit) {
@@ -118,6 +169,13 @@ export default function TemplateNewForm({ isEdit, currentTemplate, locations, se
       reset(defaultValues);
     }
   }, [isEdit, currentTemplate, users]);
+
+  useEffect(() => {
+    if (!isEdit) {
+      const tables = generateTable(defaultAreas.length * defaultDays.length, defaultSessions.length);
+      setTemplateTable([...tables]);
+    }
+  }, [isEdit, defaultAreas, defaultDays, defaultSessions]);
 
   const onSubmit = async (values) => {
     try {
@@ -153,7 +211,11 @@ export default function TemplateNewForm({ isEdit, currentTemplate, locations, se
         days: daysData,
         areas: areasData,
         staff: staffData,
-        allocationType
+        allocationType,
+        sessionDisplayType,
+        areaDisplayType,
+        staffDisplayType,
+        templateTable
       };
 
       console.log(templateToAddOrUpdate);
@@ -169,7 +231,6 @@ export default function TemplateNewForm({ isEdit, currentTemplate, locations, se
         },
         refetchQueries: [{ query: templatesQuery }]
       }).then((res) => {
-        console.log(res);
         const { data } = res;
         const returnStatus = isEdit ? data.updateTemplate : data.addTemplate;
         if (returnStatus) {
@@ -201,6 +262,9 @@ export default function TemplateNewForm({ isEdit, currentTemplate, locations, se
     }
   };
 
+  const generateTable = (rows, cols) =>
+    Array.from({ length: rows }).map(() => Array.from({ length: cols }).map(() => ({ list: [], isBlocked: false })));
+
   const handleChangeSessions = (sessions) => {
     setDefaultSessions(sessions);
   };
@@ -215,6 +279,25 @@ export default function TemplateNewForm({ isEdit, currentTemplate, locations, se
 
   const handleChangeStaff = (staff) => {
     setDefaultStaff(staff);
+  };
+
+  const handleBlockedOut = async (event) => {
+    setIsBlocking(true);
+    setBlockedOut(event.target.checked);
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    setIsBlocking(false);
+  };
+
+  const handleChangeSessionDisplayType = (event) => {
+    setSessionDisplayType(event.target.value);
+  };
+
+  const handleChangeAreaDisplayType = (event) => {
+    setAreaDisplayType(event.target.value);
+  };
+
+  const handleChangeStaffDisplayType = (event) => {
+    setStaffDisplayType(event.target.value);
   };
 
   return (
@@ -250,23 +333,44 @@ export default function TemplateNewForm({ isEdit, currentTemplate, locations, se
                 ))}
               </RHFSelect>
 
-              <Autocomplete
-                multiple
-                id="checkboxes-tags-demo"
-                options={sessions}
-                disableCloseOnSelect
-                value={defaultSessions}
-                onChange={(event, session) => handleChangeSessions(session)}
-                getOptionLabel={(option) => sentenceCase(option.title)}
-                isOptionEqualToValue={(option, value) => option._id === value._id}
-                renderOption={(props, option, { selected }) => (
-                  <li {...props} style={{ padding: 0, margin: 1 }}>
-                    <Checkbox icon={icon} checkedIcon={checkedIcon} style={{ marginRight: 8 }} checked={selected} />
-                    {sentenceCase(option.title)}
-                  </li>
-                )}
-                renderInput={(params) => <TextField {...params} label="Sessions" placeholder="Choose Sessions" />}
-              />
+              <Stack direction={{ md: 'row', sm: 'column' }} spacing={2}>
+                <FormControl sx={{ minWidth: 210 }}>
+                  <FormLabel id="demo-controlled-radio-buttons-group">Specify Display Type</FormLabel>
+                  <RadioGroup
+                    row
+                    aria-labelledby="demo-controlled-radio-buttons-group"
+                    name="controlled-radio-buttons-group"
+                    value={sessionDisplayType}
+                    onChange={handleChangeSessionDisplayType}
+                  >
+                    <FormControlLabel value="title" control={<Radio />} label="Title" />
+                    <FormControlLabel value="time" control={<Radio />} label="Start/End Time" />
+                  </RadioGroup>
+                </FormControl>
+
+                <Autocomplete
+                  multiple
+                  fullWidth
+                  id="checkboxes-tags-demo"
+                  options={sessions}
+                  disableCloseOnSelect
+                  value={defaultSessions}
+                  onChange={(event, session) => handleChangeSessions(session)}
+                  getOptionLabel={(option) =>
+                    sessionDisplayType === 'title' ? option.title : getStringTimeRange(option.startTime, option.endTime)
+                  }
+                  isOptionEqualToValue={(option, value) => option._id === value._id}
+                  renderOption={(props, option, { selected }) => (
+                    <li {...props} style={{ padding: 0, margin: 1 }}>
+                      <Checkbox icon={icon} checkedIcon={checkedIcon} style={{ marginRight: 8 }} checked={selected} />
+                      {sessionDisplayType === 'title'
+                        ? option.title
+                        : getStringTimeRange(option.startTime, option.endTime)}
+                    </li>
+                  )}
+                  renderInput={(params) => <TextField {...params} label="Sessions" placeholder="Choose Sessions" />}
+                />
+              </Stack>
 
               <Autocomplete
                 multiple
@@ -286,41 +390,86 @@ export default function TemplateNewForm({ isEdit, currentTemplate, locations, se
                 renderInput={(params) => <TextField {...params} label="Days" placeholder="Choose Days" />}
               />
 
-              <Autocomplete
-                multiple
-                id="checkboxes-tags-demo"
-                options={areas}
-                disableCloseOnSelect
-                value={defaultAreas}
-                onChange={(event, area) => handleChangeAreas(area)}
-                getOptionLabel={(option) => sentenceCase(option.title)}
-                isOptionEqualToValue={(option, value) => option._id === value._id}
-                renderOption={(props, option, { selected }) => (
-                  <li {...props} style={{ padding: 0, margin: 1 }}>
-                    <Checkbox icon={icon} checkedIcon={checkedIcon} style={{ marginRight: 8 }} checked={selected} />
-                    {sentenceCase(option.title)}
-                  </li>
-                )}
-                renderInput={(params) => <TextField {...params} label="Areas" placeholder="Choose Areas" />}
-              />
+              <Stack direction={{ md: 'row', sm: 'column' }} spacing={2}>
+                <FormControl sx={{ minWidth: 215 }}>
+                  <FormLabel id="demo-controlled-radio-buttons-group">Specify Display Type</FormLabel>
+                  <RadioGroup
+                    row
+                    aria-labelledby="demo-controlled-radio-buttons-group"
+                    name="controlled-radio-buttons-group"
+                    value={areaDisplayType}
+                    onChange={handleChangeAreaDisplayType}
+                  >
+                    <FormControlLabel value="title" control={<Radio />} label="Title" />
+                    <FormControlLabel value="alterName" control={<Radio />} label="Alternate Name" />
+                  </RadioGroup>
+                </FormControl>
 
-              <Autocomplete
-                multiple
-                id="checkboxes-tags-demo"
-                options={users}
-                disableCloseOnSelect
-                value={defaultStaff}
-                onChange={(event, staff) => handleChangeStaff(staff)}
-                getOptionLabel={(option) => capitalCase(`${option.name.first} ${option.name.last}`)}
-                isOptionEqualToValue={(option, value) => option._id === value._id}
-                renderOption={(props, option, { selected }) => (
-                  <li {...props} style={{ padding: 0, margin: 1 }}>
-                    <Checkbox icon={icon} checkedIcon={checkedIcon} style={{ marginRight: 8 }} checked={selected} />
-                    {capitalCase(`${option.name.first} ${option.name.last}`)}
-                  </li>
-                )}
-                renderInput={(params) => <TextField {...params} label="Staff" placeholder="Choose Staff" />}
-              />
+                <Autocomplete
+                  multiple
+                  fullWidth
+                  id="checkboxes-tags-demo"
+                  options={areas}
+                  disableCloseOnSelect
+                  value={defaultAreas}
+                  onChange={(event, area) => handleChangeAreas(area)}
+                  getOptionLabel={(option) => (areaDisplayType === 'title' ? option.title : option.alternateName)}
+                  isOptionEqualToValue={(option, value) => option._id === value._id}
+                  renderOption={(props, option, { selected }) => (
+                    <li {...props} style={{ padding: 0, margin: 1 }}>
+                      <Checkbox icon={icon} checkedIcon={checkedIcon} style={{ marginRight: 8 }} checked={selected} />
+                      {areaDisplayType === 'title' ? option.title : option.alternateName}
+                    </li>
+                  )}
+                  renderInput={(params) => <TextField {...params} label="Areas" placeholder="Choose Areas" />}
+                />
+              </Stack>
+
+              <Stack direction={{ md: 'row', sm: 'column' }} spacing={2}>
+                <FormControl sx={{ minWidth: 210 }}>
+                  <FormLabel id="demo-controlled-radio-buttons-group">Specify Display Type</FormLabel>
+                  <RadioGroup
+                    row
+                    aria-labelledby="demo-controlled-radio-buttons-group"
+                    name="controlled-radio-buttons-group"
+                    value={staffDisplayType}
+                    onChange={handleChangeStaffDisplayType}
+                  >
+                    <FormControlLabel value="name" control={<Radio />} label="Name" />
+                    <FormControlLabel value="class" control={<Radio />} label="Class" />
+                  </RadioGroup>
+                </FormControl>
+
+                <Autocomplete
+                  multiple
+                  fullWidth
+                  id="checkboxes-tags-demo"
+                  options={users}
+                  disableCloseOnSelect
+                  value={defaultStaff}
+                  onChange={(event, staff) => handleChangeStaff(staff)}
+                  getOptionLabel={(option) =>
+                    capitalCase(
+                      staffDisplayType === 'name' || !option.class
+                        ? `${option.name.first} ${option.name.last}`
+                        : `${option.class}`
+                    )
+                  }
+                  isOptionEqualToValue={(option, value) => option._id === value._id}
+                  renderOption={(props, option, { selected }) => (
+                    <li {...props} style={{ padding: 0, margin: 1 }}>
+                      <Checkbox icon={icon} checkedIcon={checkedIcon} style={{ marginRight: 8 }} checked={selected} />
+                      {capitalCase(
+                        staffDisplayType === 'name' || !option.class
+                          ? `${option.name.first} ${option.name.last}`
+                          : `${option.class}`
+                      )}
+                    </li>
+                  )}
+                  renderInput={(params) => <TextField {...params} label="Staff" placeholder="Choose Staff" />}
+                />
+              </Stack>
+
               <div>
                 <LabelStyle>Allocation Type</LabelStyle>
                 <RHFRadioGroup
@@ -332,9 +481,39 @@ export default function TemplateNewForm({ isEdit, currentTemplate, locations, se
                   }}
                 />
               </div>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={isBlockedOut}
+                    onChange={handleBlockedOut}
+                    inputProps={{ 'aria-label': 'controlled' }}
+                  />
+                }
+                label="Preview & Blockout Setting"
+              />
+
+              {isBlockedOut && (
+                <Box sx={{ position: 'relative', overflow: 'auto', minHeight: 300 }}>
+                  {isBlocking ? (
+                    <LoadingContainer>
+                      <CircularProgress />
+                    </LoadingContainer>
+                  ) : (
+                    <PreviewTemplate
+                      sessionDisplayType={sessionDisplayType}
+                      areaDisplayType={areaDisplayType}
+                      sessions={defaultSessions}
+                      days={defaultDays}
+                      areas={defaultAreas}
+                      templateTable={templateTable}
+                      onScheduleTable={(data) => setTemplateTable(data)}
+                    />
+                  )}
+                </Box>
+              )}
             </Stack>
-            <Box m={2} />
-            <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+
+            <LoadingButton sx={{ my: 3 }} type="submit" variant="contained" loading={isSubmitting}>
               {!isEdit ? 'Create Template' : 'Save Changes'}
             </LoadingButton>
           </Card>
@@ -342,6 +521,10 @@ export default function TemplateNewForm({ isEdit, currentTemplate, locations, se
       </Grid>
     </FormProvider>
   );
+}
+
+function getStringTimeRange(startTime, endTime) {
+  return `${fTime(startTime)} - ${fTime(endTime)}`;
 }
 
 const DAYS = [

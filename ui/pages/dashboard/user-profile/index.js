@@ -47,6 +47,7 @@ export default function UserProfile() {
 
   // get user information
   const { data, loading } = useQuery(userQuery, { variables: { _id: userId } });
+  console.log('UserData', data);
 
   // get entities and locations
   const eData = useQuery(entitiesQuery).data;
@@ -59,7 +60,9 @@ export default function UserProfile() {
 
   const user = data && data.user;
 
-  if (loading) return <LoadingScreen isDashboard />;
+  if (loading || !user) return <LoadingScreen isDashboard />;
+
+  console.log('USERS:', user);
 
   const { _id, name, emailAddress, avatarUrl } = user;
   const coverURL = '/static/contact/contact-hero.jpg';
@@ -82,9 +85,7 @@ export default function UserProfile() {
     {
       value: 'entity',
       icon: <Iconify icon="cil:school" width={20} height={20} />,
-      component: (
-        <ProfileEntity currentUser={user} entities={entities} locations={locations} userId={user._id} isEdit />
-      )
+      component: <ProfileEntity currentUser={user} entities={entities} locations={locations} userId={user._id} isEdit />
     },
     {
       value: 'settings',

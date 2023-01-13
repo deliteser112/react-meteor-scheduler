@@ -6,6 +6,8 @@ import './utils/highlight';
 import 'react-quill/dist/quill.snow.css';
 // scroll bar
 import 'simplebar/src/simplebar.css';
+// scheduler
+import './assets/common.css';
 
 import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';

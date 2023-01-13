@@ -1,0 +1,45 @@
+/* scheduler styling */
+.item {
+  display: flex;
+  user-select: none;
+}
+
+.cell {
+  border-top: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  padding: 0;
+  flex: 0 0 150px;
+  font-family: sans-serif;
+  padding: 2px;
+  background-color: #ffeb9c;
+}
+
+.notice {
+  display: flex;
+  justify-content: center;
+  border: 1px solid transparent;
+  line-height: 1.5;
+  color: #ddd;
+  user-select: none;
+}
+
+.days {
+  flex: 0 0 150px;
+  border-top: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.flex-150 {
+  flex: 0 0 150px;
+}
+
+.flex-300 {
+  flex: 0 0 300px;
+}

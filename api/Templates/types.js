@@ -9,6 +9,16 @@ export default `
     title: String
   }
 
+  input TemplateCellInput {
+    list: [String]
+    isBlocked: Boolean
+  }
+
+  type TemplateCell {
+    list: [String]
+    isBlocked: Boolean
+  }
+
   input TemplateInput {
     _id: String
     title: String
@@ -18,6 +28,10 @@ export default `
     areas: [AreaInput]
     staff: [String]
     allocationType: String
+    sessionDisplayType: String
+    areaDisplayType: String
+    staffDisplayType: String
+    templateTable: [[TemplateCellInput]]
   }
 
   type Template {
@@ -29,6 +43,10 @@ export default `
     areas: [Area]
     staff: [String]
     allocationType: String
+    sessionDisplayType: String
+    areaDisplayType: String
+    staffDisplayType: String
+    templateTable: [[TemplateCell]]
     createdAt: String
     updatedAt: String
   }  

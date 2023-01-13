@@ -114,7 +114,6 @@
     "sanitize-html": "^2.7.0",
     "simplebar": "^5.3.6",
     "simplebar-react": "^2.3.6",
-    "styled-components": "^3.4.9",
     "url-pattern": "^1.0.3",
     "uuid": "^3.3.2",
     "web-vitals": "^2.1.4",
