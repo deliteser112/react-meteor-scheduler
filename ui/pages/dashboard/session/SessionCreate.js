@@ -27,7 +27,7 @@ export default function SessionCreate() {
 
   const { data } = useQuery(editSessionQuery, { variables: { _id: sessionId } });
   const currentSession = (isEdit && data && data.session) || {};
-  console.log('currentSession', currentSession);
+
   return (
     <Page title="Session">
       <Container maxWidth="lg">

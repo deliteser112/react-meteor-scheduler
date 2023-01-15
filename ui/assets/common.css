@@ -1,4 +1,42 @@
 /* scheduler styling */
+.content {
+  margin-right: 200px;
+  padding: 10px;
+}
+
+.schedule-content {
+  overflow-x: auto;
+  margin-right: 235px;
+  padding: 10px;
+}
+
+.kiosk {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 230px;
+  padding: 10px 15px;
+  /* padding-top: 100px; */
+  flex: 0 0 150px;
+  font-family: sans-serif;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: rgb(50 50 93 / 25%) 0px 30px 60px -12px, rgb(0 0 0 / 30%) 0px 18px 36px -18px;
+}
+
+.kiosk-item {
+  width: 0;
+  white-space: nowrap;
+  user-select: none;
+  margin: 5px 0px;
+  padding: 5px 10px;
+}
+
+.clone + div {
+  display: none !important;
+}
+
 .item {
   display: flex;
   user-select: none;
@@ -7,7 +45,6 @@
 .cell {
   border-top: 1px solid #ddd;
   border-right: 1px solid #ddd;
-  padding: 0;
   flex: 0 0 150px;
   font-family: sans-serif;
   padding: 2px;
@@ -21,6 +58,10 @@
   line-height: 1.5;
   color: #ddd;
   user-select: none;
+}
+
+.schedule-content .notice {
+  line-height: 2.6;
 }
 
 .days {

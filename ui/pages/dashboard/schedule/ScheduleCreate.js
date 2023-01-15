@@ -18,6 +18,7 @@ import ScheduleNewForm from './ScheduleNewForm';
 
 // queries
 import { editSchedule as editScheduleQuery } from '../../../_queries/Schedules.gql';
+import { templates as templatesQuery } from '../../../_queries/Templates.gql';
 // ----------------------------------------------------------------------
 
 export default function ScheduleCreate() {
@@ -27,15 +28,22 @@ export default function ScheduleCreate() {
 
   const { data } = useQuery(editScheduleQuery, { variables: { _id: scheduleId } });
   const currentSchedule = (isEdit && data && data.schedule) || {};
+
+  // get templates
+  const tData = useQuery(templatesQuery).data;
+  const templates = (tData && tData.templates) || [];
+
+  console.log('TEMPLATES', templates);
+
   return (
     <Page title="Schedule">
-      <Container maxWidth="lg">
+      <Container maxWidth="xl">
         <HeaderBreadcrumbs
           heading="Schedules"
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
             { name: 'Schedules', href: PATH_DASHBOARD.schedule.root },
-            { name: isEdit ? 'Edit Schedule' : 'New Schedule' },
+            { name: isEdit ? 'Edit Schedule' : 'New Schedule' }
           ]}
           action={
             <Button
@@ -48,7 +56,7 @@ export default function ScheduleCreate() {
             </Button>
           }
         />
-        <ScheduleNewForm currentSchedule={currentSchedule} isEdit={isEdit} />
+        <ScheduleNewForm templates={templates} currentSchedule={currentSchedule} isEdit={isEdit} />
       </Container>
     </Page>
   );

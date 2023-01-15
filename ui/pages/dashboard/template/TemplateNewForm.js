@@ -136,7 +136,6 @@ export default function TemplateNewForm({ isEdit, currentTemplate, locations, se
 
   useEffect(() => {
     if (isEdit && currentTemplate && currentTemplate.location && users.length > 0) {
-      console.log('CURRENTTEmplate', currentTemplate);
       const {
         templateTable,
         sessions,
@@ -217,8 +216,6 @@ export default function TemplateNewForm({ isEdit, currentTemplate, locations, se
         staffDisplayType,
         templateTable
       };
-
-      console.log(templateToAddOrUpdate);
 
       if (isEdit) {
         templateToAddOrUpdate._id = currentTemplate._id;

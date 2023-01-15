@@ -154,8 +154,6 @@ export default function UserNewEditForm({ isEdit, currentUser, entities, locatio
 
     if (currentUser) userUpdate._id = currentUser._id;
 
-    console.log(userUpdate);
-
     await new Promise((resolve) => setTimeout(resolve, 500));
 
     updateUser({ variables: { user: userUpdate }, refetchQueries: usersQuery }).then(() => {

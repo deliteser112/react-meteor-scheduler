@@ -41,6 +41,11 @@ const navConfig = [
         title: 'templates',
         path: `${PATH_DASHBOARD.template.root}`,
         icon: getIcon('fluent:mail-template-20-regular')
+      },
+      {
+        title: 'schedules',
+        path: `${PATH_DASHBOARD.schedule.root}`,
+        icon: getIcon('ant-design:schedule-outlined')
       }
     ]
   },
