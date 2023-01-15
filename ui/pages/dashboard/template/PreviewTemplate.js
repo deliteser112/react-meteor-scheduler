@@ -59,7 +59,7 @@ export default function PreviewTemplate({
                 <div className="days">
                   <span>{day.title}</span>
                 </div>
-                <div style={{ flex: '0 0 150px' }}>
+                <div className="flex-150">
                   {areas &&
                     areas.map((area) => (
                       <div className="cell" key={area._id} style={{ backgroundColor: '#C6EFCE' }}>
@@ -106,10 +106,10 @@ export default function PreviewTemplate({
                                   {(provided, snapshot) => (
                                     <div
                                       className="item"
-                                      innerRef={provided.innerRef}
+                                      ref={provided.innerRef}
                                       {...provided.draggableProps}
                                       {...provided.dragHandleProps}
-                                      isDragging={snapshot.isDragging}
+                                      // isDragging={snapshot.isDragging}
                                       style={provided.draggableProps.style}
                                     >
                                       <svg

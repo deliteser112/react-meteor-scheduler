@@ -73,7 +73,8 @@ export default function Router() {
         { path: 'schedules', element: <Schedules /> },
         { path: 'schedules/create', element: <ScheduleCreate /> },
         { path: 'schedules/:scheduleId/edit', element: <ScheduleCreate /> },
-
+        { path: 'schedules/preview', element: <ScheduleTemplate /> },
+        
         // Admin/entities
         {
           path: 'entities',
@@ -217,6 +218,8 @@ const PreviewTemplate = Loadable(lazy(() => import('../pages/dashboard/template/
 // schedules
 const Schedules = Loadable(lazy(() => import('../pages/dashboard/schedule')));
 const ScheduleCreate = Loadable(lazy(() => import('../pages/dashboard/schedule/ScheduleCreate')));
+
+const ScheduleTemplate = Loadable(lazy(() => import('../pages/dashboard/schedule/ScheduleTemplate')));
 
 // users
 const User = Loadable(lazy(() => import('../pages/dashboard/user')));

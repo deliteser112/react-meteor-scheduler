@@ -42,8 +42,6 @@ export default function LocationNewForm({ isEdit, currentLocation, entities }) {
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-  const [entityValue, setEntityValue] = useState('');
-
   const NewLocationSchema = Yup.object().shape({
     title: Yup.string().required('Title is required'),
     address: Yup.string().required('Address is required'),
@@ -121,10 +119,6 @@ export default function LocationNewForm({ isEdit, currentLocation, entities }) {
     } catch (error) {
       console.error(error);
     }
-  };
-
-  const handleEntityValue = (evt) => {
-    setEntityValue(evt.target.value);
   };
 
   return (
