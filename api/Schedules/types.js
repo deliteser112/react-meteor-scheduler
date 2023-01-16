@@ -9,12 +9,22 @@ export default `
     isBlocked: Boolean
   }
 
+  input ScheduleTemplateInput {
+    _id: String
+    title: String
+  }
+
+  type ScheduleTemplate {
+    _id: String
+    title: String
+  }
+  
   input ScheduleInput {
     _id: String
     title: String
     startDate: String
     endDate: String
-    templateId: String
+    template: ScheduleTemplateInput
     state: String
     scheduleTable: [[CellInput]]
   }
@@ -24,7 +34,7 @@ export default `
     title: String
     startDate: String
     endDate: String
-    templateId: String
+    template: ScheduleTemplate
     state: String
     scheduleTable: [[Cell]]
     createdAt: String

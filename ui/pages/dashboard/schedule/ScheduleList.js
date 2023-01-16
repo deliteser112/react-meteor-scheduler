@@ -38,7 +38,11 @@ import { ScheduleTableRow, ScheduleTableToolbar } from '../../../sections/@dashb
 
 const TABLE_HEAD = [
   { id: 'title', label: 'Title', alignRight: false },
-  { id: 'alterName', label: 'Alternate Name', alignRight: false },
+  { id: 'template', label: 'Template', alignRight: false },
+  { id: 'state', label: 'State', alignRight: false },
+  { id: 'createdBy', label: 'Created By', alignRight: false },
+  { id: 'startDate', label: 'Start Date', alignRight: false },
+  { id: 'endDate', label: 'End Date', alignRight: false },
   { id: 'createdAt', label: 'Created At', alignRight: false },
   { id: '' }
 ];

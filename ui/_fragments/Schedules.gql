@@ -3,7 +3,10 @@ fragment ScheduleAttributes on Schedule {
 	title
 	startDate
 	endDate
-	templateId
+	template {
+		_id
+		title
+	}
 	state
 	scheduleTable {
 		list

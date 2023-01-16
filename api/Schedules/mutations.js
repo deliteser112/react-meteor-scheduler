@@ -10,7 +10,7 @@ export default {
       startDate: schedule.startDate,
       endDate: schedule.endDate,
       state: schedule.state,
-      templateId: schedule.templateId,
+      template: schedule.template,
       scheduleTable: schedule.scheduleTable,
       createdAt: date,
       updatedAt: date

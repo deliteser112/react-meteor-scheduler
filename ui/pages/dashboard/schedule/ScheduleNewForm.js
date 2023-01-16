@@ -70,6 +70,8 @@ export default function ScheduleNewForm({ isEdit, templates, currentSchedule }) 
   const [endDate, setEndDate] = useState(null);
   const [templateId, setTemplateId] = useState('');
 
+  const [schedule, setSchedule] = useState([]);
+
   const { data } = useQuery(editTemplateQuery, { variables: { _id: templateId } });
   const template = data && data.template;
 
@@ -100,8 +102,12 @@ export default function ScheduleNewForm({ isEdit, templates, currentSchedule }) 
   } = methods;
 
   useEffect(() => {
-    console.log('templates', templates);
-    if (isEdit && currentSchedule) {
+    if (isEdit && currentSchedule && currentSchedule.template) {
+      const { startDate, endDate, template } = currentSchedule;
+      setStartDate(startDate);
+      setEndDate(endDate);
+      setTemplateId(template._id);
+
       reset(defaultValues);
     }
     if (!isEdit) {
@@ -109,24 +115,36 @@ export default function ScheduleNewForm({ isEdit, templates, currentSchedule }) 
     }
   }, [isEdit, currentSchedule]);
 
-
   const onSubmit = async (values) => {
     try {
-      const { title, alternateName } = values;
+      const { title } = values;
+
+      const scheduleTable = getScheduleTable(schedule);
+
+      await new Promise((resolve) => setTimeout(resolve, 500));
 
       const mutation = isEdit ? updateSchedule : addSchedule;
       const scheduleToAddOrUpdate = {
         title,
-        alternateName
+        startDate,
+        endDate,
+        template: {
+          _id: template._id,
+          title: template.title
+        },
+        state: 'Published',
+        scheduleTable
       };
 
       if (isEdit) {
         scheduleToAddOrUpdate._id = currentSchedule._id;
       }
 
+      console.log(scheduleToAddOrUpdate);
+
       mutation({
         variables: {
-          ...scheduleToAddOrUpdate
+          schedule: scheduleToAddOrUpdate
         },
         refetchQueries: [{ query: schedulesQuery }]
       }).then(() => {
@@ -199,16 +217,39 @@ export default function ScheduleNewForm({ isEdit, templates, currentSchedule }) 
               </FormControl>
 
               <Box sx={{ position: 'relative' }}>
-                {template && <ScheduleTemplate template={template} users={users} />}
+                {template && (
+                  <ScheduleTemplate
+                    isEdit={isEdit}
+                    currentSchedule={currentSchedule}
+                    template={template}
+                    users={users}
+                    onSetSchedule={(sche) => setSchedule([...sche])}
+                  />
+                )}
               </Box>
             </Stack>
             <Box m={2} />
             <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-              {!isEdit ? 'Create Schedule' : 'Save Changes'}
+              {!isEdit ? 'Publish Schedule' : 'Save Changes'}
             </LoadingButton>
           </Card>
         </Grid>
       </Grid>
     </FormProvider>
   );
+}
+
+function getScheduleTable(scheArray) {
+  const resultArray = scheArray.map((rows) =>
+    rows.map((col) => {
+      delete col.__typename;
+      let modifiedList = [];
+      if (col.list.length > 0) {
+        modifiedList = col.list.map((item) => item._id);
+      }
+      return { ...col, list: modifiedList };
+    })
+  );
+
+  return resultArray;
 }
