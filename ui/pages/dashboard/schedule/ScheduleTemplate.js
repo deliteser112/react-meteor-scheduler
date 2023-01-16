@@ -28,19 +28,6 @@ const HtmlTooltip = styled(({ className, ...props }) => <Tooltip {...props} clas
   })
 );
 
-const TooltipContent = React.forwardRef((props, ref) => (
-  <MyAvatar ref={ref} avatarUrl={props.avatarUrl} displayName={getStringName(props?.name?.first, props?.name?.last)} />
-));
-
-const SomeContent = React.forwardRef((props, ref) => {
-  console.log('PPP:', props);
-  return (
-    <div {...props} ref={ref}>
-      Hello, World!
-    </div>
-  );
-});
-
 // a little function to help us with reordering the result
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list);
@@ -99,6 +86,8 @@ export default function ScheduleTemplate({ template, users }) {
     days,
     sessions
   } = template;
+
+  console.log('TEMPLATWE', template);
 
   const [scheduleData, setScheduleData] = useState([]);
   const [assignedUsers, setAssignedUsers] = useState([]);
@@ -316,7 +305,7 @@ export default function ScheduleTemplate({ template, users }) {
                             }}
                           >
                             {list.length ? (
-                              <AvatarGroup max={3}>
+                              <AvatarGroup max={3} sx={{ flexDirection: list.length > 3 ? 'row-reverse' : 'row' }}>
                                 {list.map((item, index) => (
                                   <Draggable key={item.id} draggableId={item.id} index={index}>
                                     {(provided, snapshot) => (
@@ -332,10 +321,10 @@ export default function ScheduleTemplate({ template, users }) {
                                           title={
                                             <React.Fragment>
                                               <Stack spacing={1}>
-                                                <Typography color="inherit">
+                                                <Typography color="inherit" variant="caption">
                                                   Name: <b>{getStringName(item?.name?.first, item?.name?.last)}</b>
                                                 </Typography>
-                                                <Typography color="inherit">
+                                                <Typography color="inherit" variant="caption">
                                                   Class: <b>{item.class ? item.class : 'None'}</b>
                                                 </Typography>
                                                 <Button
@@ -362,35 +351,6 @@ export default function ScheduleTemplate({ template, users }) {
                                             />
                                           </div>
                                         </HtmlTooltip>
-
-                                        {/* <svg
-                                          onClick={() => {
-                                            const newScheData = [...scheduleData];
-                                            newScheData[rowIdx][colIdx].list.splice(index, 1);
-                                            setScheduleData(newScheData.filter((group) => group.length));
-                                          }}
-                                          width="18"
-                                          height="18"
-                                          viewBox="0 0 18 18"
-                                          style={{
-                                            cursor: 'pointer'
-                                          }}
-                                        >
-                                          <path
-                                            fill="currentColor"
-                                            d="M6.4 19L5 17.6l5.6-5.6L5 6.4L6.4 5l5.6 5.6L17.6 5L19 6.4L13.4 12l5.6 5.6l-1.4 1.4l-5.6-5.6Z"
-                                          />
-                                        </svg>
-                                        <div
-                                          style={{
-                                            maxWidth: 135,
-                                            whiteSpace: 'nowrap',
-                                            overflow: 'hidden',
-                                            textOverflow: 'ellipsis'
-                                          }}
-                                        >
-                                          {item.content}
-                                        </div> */}
                                       </div>
                                     )}
                                   </Draggable>
@@ -427,117 +387,3 @@ function getStringTimeRange(startTime, endTime) {
 function getStringName(first, last) {
   return `${first} ${last}`;
 }
-
-const assignedUsers = [
-  {
-    _id: 'item_0',
-    id: uuid(),
-    content: 'Olgica Krsteva',
-    avatarUrl: 'https://www.hkbuas.edu.hk/sites/hkbuas/files/web/primary_division/our_teams/Pradhan_Winnie.jpg'
-  },
-  {
-    _id: 'item_1',
-    id: uuid(),
-    content: 'Daniel Lewis',
-    avatarUrl: 'https://www.hkbuas.edu.hk/sites/hkbuas/files/web/primary_division/our_teams/ap_dr_ruby_tai.jpg'
-  },
-  {
-    _id: 'item_2',
-    id: uuid(),
-    content: 'Alexander Rydin',
-    avatarUrl: 'https://www.hkbuas.edu.hk/sites/hkbuas/files/web/primary_division/our_teams/20210105_drBen_Photo.png'
-  },
-  {
-    _id: 'item_3',
-    id: uuid(),
-    content: 'Viktoriia Chubatiuk',
-    avatarUrl: 'https://www.hkbuas.edu.hk/sites/hkbuas/files/web/primary_division/our_teams/svp_chong_hiu_li_jackie.jpg'
-  },
-  {
-    _id: 'item_4',
-    id: uuid(),
-    content: 'Illia Voloshenko',
-    avatarUrl: 'https://www.hkbuas.edu.hk/sites/hkbuas/files/web/primary_division/our_teams/Kelvin_Lee_09.02.28.jpg'
-  }
-];
-
-const SESSIONS = [
-  {
-    _id: 1,
-    title: 'Before School 1'
-  },
-  {
-    _id: 2,
-    title: 'Before School 2'
-  },
-  {
-    _id: 3,
-    title: 'Recess 1'
-  },
-  {
-    _id: 4,
-    title: 'Recess 2'
-  },
-  {
-    _id: 5,
-    title: 'Lunch 1'
-  },
-  {
-    _id: 6,
-    title: 'Lunch 2'
-  },
-  {
-    _id: 7,
-    title: 'After School'
-  }
-];
-
-const AREAS = [
-  {
-    _id: 1,
-    title: 'Car Park Gate'
-  },
-  {
-    _id: 2,
-    title: 'Courtyart'
-  },
-  {
-    _id: 3,
-    title: 'Front Gate'
-  },
-  {
-    _id: 4,
-    title: 'Junior Playground'
-  },
-  {
-    _id: 5,
-    title: 'Learning Street'
-  },
-  {
-    _id: 61,
-    title: 'Basketball Court'
-  }
-];
-
-const DAYS = [
-  {
-    _id: 1,
-    title: 'Monday'
-  },
-  {
-    _id: 2,
-    title: 'Tuesday'
-  },
-  {
-    _id: 3,
-    title: 'Wednesday'
-  },
-  {
-    _id: 4,
-    title: 'Thursday'
-  },
-  {
-    _id: 5,
-    title: 'Friday'
-  }
-];

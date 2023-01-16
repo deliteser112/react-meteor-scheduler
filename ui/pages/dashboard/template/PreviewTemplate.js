@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 // utils
 import { fTime } from '../../../utils/formatTime';
@@ -31,13 +30,8 @@ export default function PreviewTemplate({
     setScheduleData([...templateTable]);
   }, [templateTable]);
 
-  const onDragEnd = (result) => {
-    const { source, destination } = result;
-    console.log({ source, destination });
-  };
-
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
+    <>
       <div className="d-flex">
         <div className="flex-300" />
         {sessions &&
@@ -78,77 +72,24 @@ export default function PreviewTemplate({
               <div key={`row_${rowIdx}`} className="d-flex">
                 {rows.map(({ list, isBlocked }, colIdx) => {
                   return (
-                    <Droppable
-                      key={`${rowIdx}_${colIdx}`}
-                      droppableId={`${rowIdx}_${colIdx}`}
-                      isDropDisabled={isBlocked}
+                    <div
+                      key={colIdx}
+                      className="cell"
+                      style={{
+                        backgroundColor: `${isBlocked ? '#ddd' : '#ffeb9c'}`
+                      }}
+                      onClick={() => {
+                        if (isBlocking) {
+                          const newScheData = [...scheduleData];
+                          const blockedOut = newScheData[rowIdx][colIdx].isBlocked;
+                          newScheData[rowIdx][colIdx].isBlocked = !blockedOut;
+                          onScheduleTable([...newScheData]);
+                          setScheduleData([...newScheData]);
+                        }
+                      }}
                     >
-                      {(provided, snapshot) => (
-                        <div
-                          className="cell"
-                          ref={provided.innerRef}
-                          style={{
-                            backgroundColor: `${isBlocked ? '#ddd' : '#ffeb9c'}`
-                          }}
-                          onClick={() => {
-                            if (isBlocking) {
-                              const newScheData = [...scheduleData];
-                              const blockedOut = newScheData[rowIdx][colIdx].isBlocked;
-                              newScheData[rowIdx][colIdx].isBlocked = !blockedOut;
-                              onScheduleTable([...newScheData]);
-                              setScheduleData([...newScheData]);
-                            }
-                          }}
-                        >
-                          {list.length
-                            ? list.map((item, index) => (
-                                <Draggable key={item.id} draggableId={item.id} index={index}>
-                                  {(provided, snapshot) => (
-                                    <div
-                                      className="item"
-                                      ref={provided.innerRef}
-                                      {...provided.draggableProps}
-                                      {...provided.dragHandleProps}
-                                      // isDragging={snapshot.isDragging}
-                                      style={provided.draggableProps.style}
-                                    >
-                                      <svg
-                                        onClick={() => {
-                                          const newScheData = [...scheduleData];
-                                          newScheData[rowIdx][colIdx].list.splice(index, 1);
-                                          setScheduleData(newScheData.filter((group) => group.length));
-                                        }}
-                                        width="18"
-                                        height="18"
-                                        viewBox="0 0 18 18"
-                                        style={{
-                                          cursor: 'pointer'
-                                        }}
-                                      >
-                                        <path
-                                          fill="currentColor"
-                                          d="M6.4 19L5 17.6l5.6-5.6L5 6.4L6.4 5l5.6 5.6L17.6 5L19 6.4L13.4 12l5.6 5.6l-1.4 1.4l-5.6-5.6Z"
-                                        />
-                                      </svg>
-                                      <div
-                                        style={{
-                                          maxWidth: 135,
-                                          whiteSpace: 'nowrap',
-                                          overflow: 'hidden',
-                                          textOverflow: 'ellipsis'
-                                        }}
-                                      >
-                                        {item.content}
-                                      </div>
-                                    </div>
-                                  )}
-                                </Draggable>
-                              ))
-                            : !provided.placeholder && <div className="notice">-</div>}
-                          {provided.placeholder}
-                        </div>
-                      )}
-                    </Droppable>
+                      <div className="notice">-</div>
+                    </div>
                   );
                 })}
               </div>
@@ -156,7 +97,7 @@ export default function PreviewTemplate({
           })}
         </div>
       </div>
-    </DragDropContext>
+    </>
   );
 }
 
