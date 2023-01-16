@@ -91,18 +91,10 @@ export default function ScheduleTemplate({ isEdit, currentSchedule, template, us
   const [scheduleData, setScheduleData] = useState([]);
   const [assignedUsers, setAssignedUsers] = useState([]);
 
-  // useEffect(() => {
-  //   const tables = generateTable(AREAS.length * DAYS.length, SESSIONS.length);
-  //   setScheduleData([...tables]);
-  // }, []);
-
   useEffect(() => {
     if (isEdit && currentSchedule) {
       const { scheduleTable } = currentSchedule;
       const table = getScheduleTable(scheduleTable, users);
-      console.log('Changed', table);
-      console.log('Scheduled', scheduleTable);
-      console.log('Original', templateTable);
       setScheduleData([...table]);
     } else {
       setScheduleData([...templateTable]);
@@ -110,7 +102,6 @@ export default function ScheduleTemplate({ isEdit, currentSchedule, template, us
   }, [isEdit, users, templateTable, currentSchedule]);
 
   useEffect(() => {
-    console.log('CHanged', scheduleData);
     onSetSchedule([...scheduleData]);
   }, [scheduleData]);
 
@@ -262,7 +253,7 @@ export default function ScheduleTemplate({ isEdit, currentSchedule, template, us
       </Droppable>
       <div className="schedule-content">
         <div className="d-flex">
-          <div className="flex-300" />
+          <div className="flex-300" style={{ backgroundColor: '#ffc7ce' }} />
           {sessions.map((item) => (
             <div
               className="cell"

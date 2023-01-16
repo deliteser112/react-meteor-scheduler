@@ -87,7 +87,7 @@ export default function DashboardNavbar({ onOpenSidebar, isCollapse = false, ver
   };
   return (
     <RootStyle isCollapse={isCollapse} isOffset={isOffset} verticalLayout={verticalLayout}>
-      {!emailVerified && <EmailVerifyAlert email={email} verifyEmail={handleSendVerifyEmail} />}
+      {/* {!emailVerified && <EmailVerifyAlert email={email} verifyEmail={handleSendVerifyEmail} />} */}
       <ToolbarStyle>
         <IconButton onClick={onOpenSidebar} sx={{ mr: 1, color: 'text.primary', display: { lg: 'none' } }}>
           <Iconify icon="eva:menu-2-fill" />

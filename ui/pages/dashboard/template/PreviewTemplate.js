@@ -33,7 +33,7 @@ export default function PreviewTemplate({
   return (
     <>
       <div className="d-flex">
-        <div className="flex-300" />
+        <div className="flex-300" style={{ backgroundColor: '#ffc7ce' }} />
         {sessions &&
           sessions.map((item) => (
             <div
