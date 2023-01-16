@@ -140,8 +140,6 @@ export default function ScheduleNewForm({ isEdit, templates, currentSchedule }) 
         scheduleToAddOrUpdate._id = currentSchedule._id;
       }
 
-      console.log(scheduleToAddOrUpdate);
-
       mutation({
         variables: {
           schedule: scheduleToAddOrUpdate
@@ -207,6 +205,7 @@ export default function ScheduleNewForm({ isEdit, templates, currentSchedule }) 
                   value={templateId}
                   label="Choose Template"
                   onChange={handleChangeTemplate}
+                  disabled={isEdit}
                 >
                   {templates.map((temp) => (
                     <MenuItem key={temp._id} value={temp._id}>
