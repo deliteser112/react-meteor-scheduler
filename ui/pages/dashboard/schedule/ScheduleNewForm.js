@@ -76,8 +76,6 @@ export default function ScheduleNewForm({ isEdit, templates, currentSchedule }) 
   const userData = useQuery(usersQuery).data;
   const users = (userData && userData.users && userData.users.users) || [];
 
-  console.log('USERS:', users);
-
   const NewScheduleSchema = Yup.object().shape({
     title: Yup.string().required('Title is required')
   });
@@ -111,34 +109,6 @@ export default function ScheduleNewForm({ isEdit, templates, currentSchedule }) 
     }
   }, [isEdit, currentSchedule]);
 
-  // Change Template Table by templateId id
-  useEffect(() => {
-    if (template) {
-      const {
-        templateTable,
-        allocationType,
-        staff,
-        areaDisplayType,
-        sessionDisplayType,
-        staffDisplayType,
-        areas,
-        days,
-        sessions
-      } = template;
-
-      console.log({
-        templateTable,
-        allocationType,
-        staff,
-        areaDisplayType,
-        sessionDisplayType,
-        staffDisplayType,
-        areas,
-        days,
-        sessions
-      });
-    }
-  }, [template]);
 
   const onSubmit = async (values) => {
     try {

@@ -366,6 +366,7 @@ export default function TemplateNewForm({ isEdit, currentTemplate, locations, se
                     </li>
                   )}
                   renderInput={(params) => <TextField {...params} label="Sessions" placeholder="Choose Sessions" />}
+                  disabled={isEdit}
                 />
               </Stack>
 
@@ -385,6 +386,7 @@ export default function TemplateNewForm({ isEdit, currentTemplate, locations, se
                   </li>
                 )}
                 renderInput={(params) => <TextField {...params} label="Days" placeholder="Choose Days" />}
+                disabled={isEdit}
               />
 
               <Stack direction={{ md: 'row', sm: 'column' }} spacing={2}>
@@ -419,6 +421,7 @@ export default function TemplateNewForm({ isEdit, currentTemplate, locations, se
                     </li>
                   )}
                   renderInput={(params) => <TextField {...params} label="Areas" placeholder="Choose Areas" />}
+                  disabled={isEdit}
                 />
               </Stack>
 
