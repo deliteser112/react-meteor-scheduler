@@ -6,7 +6,10 @@ query schedules {
 		title
 		startDate
 		endDate
-		templateId
+		template {
+			_id
+			title
+		}
 		state
 		createdAt
 		updatedAt

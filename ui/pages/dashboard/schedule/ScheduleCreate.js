@@ -33,8 +33,6 @@ export default function ScheduleCreate() {
   const tData = useQuery(templatesQuery).data;
   const templates = (tData && tData.templates) || [];
 
-  console.log('TEMPLATES', templates);
-
   return (
     <Page title="Schedule">
       <Container maxWidth="xl">

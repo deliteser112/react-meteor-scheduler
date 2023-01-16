@@ -5,12 +5,13 @@ import { capitalCase } from 'change-case';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 // mui
-import { Divider, Stack, AvatarGroup, Button, Typography } from '@mui/material';
+import { Divider, Stack, AvatarGroup, Typography, IconButton } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 
 // components
 import MyAvatar from '../../../components/MyAvatar';
+import Iconify from '../../../components/Iconify';
 
 // utils
 import { fTime } from '../../../utils/formatTime';
@@ -74,7 +75,7 @@ const move = (source, destination, droppableSource, droppableDestination, source
   return sourceData;
 };
 
-export default function ScheduleTemplate({ template, users }) {
+export default function ScheduleTemplate({ isEdit, currentSchedule, template, users, onSetSchedule }) {
   const {
     templateTable,
     allocationType,
@@ -87,8 +88,6 @@ export default function ScheduleTemplate({ template, users }) {
     sessions
   } = template;
 
-  console.log('TEMPLATWE', template);
-
   const [scheduleData, setScheduleData] = useState([]);
   const [assignedUsers, setAssignedUsers] = useState([]);
 
@@ -98,15 +97,28 @@ export default function ScheduleTemplate({ template, users }) {
   // }, []);
 
   useEffect(() => {
-    setScheduleData([...templateTable]);
-  }, [templateTable]);
+    if (isEdit && currentSchedule) {
+      const { scheduleTable } = currentSchedule;
+      const table = getScheduleTable(scheduleTable, users);
+      console.log('Changed', table);
+      console.log('Scheduled', scheduleTable);
+      console.log('Original', templateTable);
+      setScheduleData([...table]);
+    } else {
+      setScheduleData([...templateTable]);
+    }
+  }, [isEdit, users, templateTable, currentSchedule]);
+
+  useEffect(() => {
+    console.log('CHanged', scheduleData);
+    onSetSchedule([...scheduleData]);
+  }, [scheduleData]);
 
   useEffect(() => {
     const assUsers = staff.map((_id) => {
       const item = users.find((user) => user._id === _id);
       return { ...item, id: uuid() };
     });
-    console.log('HELLO', assUsers);
     setAssignedUsers([...assUsers]);
   }, [staff, users]);
 
@@ -117,8 +129,6 @@ export default function ScheduleTemplate({ template, users }) {
     if (!destination) {
       return;
     }
-
-    console.log('==> result', result);
 
     const sR = source.droppableId.split('_')[0];
     const sC = source.droppableId.split('_')[1];
@@ -141,8 +151,6 @@ export default function ScheduleTemplate({ template, users }) {
         } else if (allocationType === 'multiple') {
           sche[dR][dC].list = copy(assignedUsers, sche[dR][dC].list, source, destination);
         }
-
-        console.log('SCHE:', sche);
 
         setScheduleData([...sche]);
         break;
@@ -283,7 +291,7 @@ export default function ScheduleTemplate({ template, users }) {
             ))}
           </div>
           <div>
-            {templateTable.map((rows, rowIdx) => {
+            {scheduleData.map((rows, rowIdx) => {
               return (
                 <div key={`row_${rowIdx}`} className="d-flex">
                   {rows.map(({ list, isBlocked }, colIdx) => {
@@ -320,28 +328,35 @@ export default function ScheduleTemplate({ template, users }) {
                                         <HtmlTooltip
                                           title={
                                             <React.Fragment>
-                                              <Stack spacing={1}>
-                                                <Typography color="inherit" variant="caption">
-                                                  Name: <b>{getStringName(item?.name?.first, item?.name?.last)}</b>
-                                                </Typography>
-                                                <Typography color="inherit" variant="caption">
-                                                  Class: <b>{item.class ? item.class : 'None'}</b>
-                                                </Typography>
-                                                <Button
-                                                  variant="contained"
+                                              <Stack spacing={2} direction="row" alignItems="center">
+                                                <Stack spacing={0}>
+                                                  <Typography color="inherit" variant="caption">
+                                                    Name: <b>{getStringName(item?.name?.first, item?.name?.last)}</b>
+                                                  </Typography>
+                                                  <Typography color="inherit" variant="caption">
+                                                    Class: <b>{item.class ? item.class : 'None'}</b>
+                                                  </Typography>
+                                                </Stack>
+                                                <IconButton
+                                                  aria-label="delete"
                                                   size="small"
                                                   onClick={() => {
                                                     const newScheData = [...scheduleData];
                                                     newScheData[rowIdx][colIdx].list.splice(index, 1);
                                                     setScheduleData(newScheData.filter((group) => group.length));
                                                   }}
+                                                  color="error"
                                                 >
-                                                  Remove this staff
-                                                </Button>
+                                                  <Iconify
+                                                    icon={'material-symbols:delete-outline'}
+                                                    sx={{ width: 24, height: 24 }}
+                                                  />
+                                                </IconButton>
                                               </Stack>
                                             </React.Fragment>
                                           }
                                           placement="top"
+                                          leaveDelay={400}
                                           arrow
                                         >
                                           <div>
@@ -376,8 +391,11 @@ export default function ScheduleTemplate({ template, users }) {
 }
 
 ScheduleTemplate.propTypes = {
+  isEdit: PropTypes.bool,
+  currentSchedule: PropTypes.object,
   template: PropTypes.object,
-  users: PropTypes.array
+  users: PropTypes.array,
+  onSetSchedule: PropTypes.func
 };
 
 function getStringTimeRange(startTime, endTime) {
@@ -386,4 +404,21 @@ function getStringTimeRange(startTime, endTime) {
 
 function getStringName(first, last) {
   return `${first} ${last}`;
+}
+
+function getScheduleTable(scheArray, users) {
+  const resultArray = scheArray.map((rows) =>
+    rows.map((col) => {
+      let modifiedList = [];
+      if (col.list.length > 0) {
+        modifiedList = col.list.map((_id) => {
+          const item = users.find((user) => user._id === _id);
+          return { ...item, id: uuid() };
+        });
+      }
+      return { ...col, list: modifiedList };
+    })
+  );
+
+  return resultArray;
 }

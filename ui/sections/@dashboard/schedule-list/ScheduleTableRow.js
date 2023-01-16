@@ -7,6 +7,7 @@ import Image from '../../../components/Image';
 import { TableMoreMenu } from '../../../components/table';
 import Iconify from '../../../components/Iconify';
 import ConfirmDialog from '../../../components/ConfirmDialog';
+import Label from '../../../components/Label';
 
 // utils
 import { fDate } from '../../../utils/formatTime';
@@ -21,7 +22,7 @@ ScheduleTableRow.propTypes = {
 };
 
 export default function ScheduleTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
-  const { title, alternateName, cover, createdAt } = row;
+  const { title, startDate, endDate, template, state, cover, createdAt } = row;
 
   const mockImageUrl = '/assets/document.png';
 
@@ -67,7 +68,13 @@ export default function ScheduleTableRow({ row, selected, onEditRow, onSelectRow
           {title}
         </Typography>
       </TableCell>
-      <TableCell align="left">{alternateName}</TableCell>
+      <TableCell align="left">{template.title}</TableCell>
+      <TableCell align="left">
+        <Label color={state === 'Published' ? 'success' : 'info'}>{state}</Label>
+      </TableCell>
+      <TableCell align="left">Admin</TableCell>
+      <TableCell align="left">{fDate(new Date(startDate))}</TableCell>
+      <TableCell align="left">{fDate(new Date(endDate))}</TableCell>
       <TableCell align="left">{fDate(new Date(createdAt))}</TableCell>
       <TableCell align="right">
         <TableMoreMenu
