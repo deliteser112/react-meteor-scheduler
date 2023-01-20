@@ -32,5 +32,11 @@ export default {
     if (!context.user) throw new Error('Sorry, you must be logged in to remove a location.');
     Locations.remove(args);
     return args;
+  },
+  removeMultiLocations: async (root, { _id }, context) => {
+    const _ids = _id.split(',');
+    if (!context.user) throw new Error('Sorry, you must be logged in to remove locations.');
+    Locations.remove({ _id: { $in: _ids } });
+    return { _id };
   }
 };

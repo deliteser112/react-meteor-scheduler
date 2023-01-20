@@ -20,18 +20,42 @@ import LocationList from './LocationList';
 
 // queries & mutations
 import { locations as locationsQuery } from '../../../_queries/Locations.gql';
-import { removeLocation as removeLocationMutation } from '../../../_mutations/Locations.gql';
+import {
+  removeLocation as removeLocationMutation,
+  removeMultiLocations as removeMultiLocationsMutation
+} from '../../../_mutations/Locations.gql';
 // ----------------------------------------------------------------------
 
 export default function Location() {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [removeLocation] = useMutation(removeLocationMutation);
+  const [removeMultiLocations] = useMutation(removeMultiLocationsMutation);
 
   const { loading, data } = useQuery(locationsQuery);
 
   const locations = (data && data.locations) || [];
 
   const deleteLocation = (_id) => {
+    removeLocation({
+      variables: {
+        _id
+      },
+      refetchQueries: [{ query: locationsQuery }]
+    }).then(async (res) => {
+      enqueueSnackbar('Deleted successfully!', {
+        variant: 'success',
+        autoHideDuration: 2500,
+        action: (key) => (
+          <IconButton size="small" onClick={() => closeSnackbar(key)}>
+            <Iconify icon="eva:close-outline" />
+          </IconButton>
+        )
+      });
+    });
+  };
+
+  const deleteMultiLocations = (ids) => {
+    const _id = ids.toString();
     removeLocation({
       variables: {
         _id
@@ -67,7 +91,12 @@ export default function Location() {
             </Button>
           }
         />
-        <LocationList isLoading={loading} locationList={locations} onDelete={(id) => deleteLocation(id)} />
+        <LocationList
+          isLoading={loading}
+          locationList={locations}
+          onDelete={(id) => deleteLocation(id)}
+          onDeleteMultiRows={(ids) => deleteMultiLocations(ids)}
+        />
       </Container>
     </Page>
   );

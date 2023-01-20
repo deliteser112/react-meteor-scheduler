@@ -20,12 +20,16 @@ import AreaList from './AreaList';
 
 // queries & mutations
 import { areas as areasQuery } from '../../../_queries/Areas.gql';
-import { removeArea as removeAreaMutation } from '../../../_mutations/Areas.gql';
+import {
+  removeArea as removeAreaMutation,
+  removeMultiAreas as removeMultiAreasMutation
+} from '../../../_mutations/Areas.gql';
 // ----------------------------------------------------------------------
 
 export default function Area() {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [removeArea] = useMutation(removeAreaMutation);
+  const [removeMultiAreas] = useMutation(removeMultiAreasMutation);
 
   const { loading, data } = useQuery(areasQuery);
 
@@ -33,6 +37,26 @@ export default function Area() {
 
   const deleteArea = (_id) => {
     removeArea({
+      variables: {
+        _id
+      },
+      refetchQueries: [{ query: areasQuery }]
+    }).then(async (res) => {
+      enqueueSnackbar('Deleted successfully!', {
+        variant: 'success',
+        autoHideDuration: 2500,
+        action: (key) => (
+          <IconButton size="small" onClick={() => closeSnackbar(key)}>
+            <Iconify icon="eva:close-outline" />
+          </IconButton>
+        )
+      });
+    });
+  };
+
+  const deleteMultiAreas = (ids) => {
+    const _id = ids.toString();
+    removeMultiAreas({
       variables: {
         _id
       },
@@ -67,7 +91,12 @@ export default function Area() {
             </Button>
           }
         />
-        <AreaList isLoading={loading} areaList={areas} onDelete={(id) => deleteArea(id)} />
+        <AreaList
+          isLoading={loading}
+          areaList={areas}
+          onDelete={(id) => deleteArea(id)}
+          onDeleteMultiRows={(ids) => deleteMultiAreas(ids)}
+        />
       </Container>
     </Page>
   );

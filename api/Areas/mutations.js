@@ -31,5 +31,11 @@ export default {
     if (!context.user) throw new Error('Sorry, you must be logged in to remove a area.');
     Areas.remove(args);
     return args;
+  },
+  removeMultiAreas: async (root, { _id }, context) => {
+    const _ids = _id.split(',');
+    if (!context.user) throw new Error('Sorry, you must be logged in to remove areas.');
+    Areas.remove({ _id: { $in: _ids } });
+    return { _id };
   }
 };

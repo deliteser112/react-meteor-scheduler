@@ -36,5 +36,11 @@ export default {
     if (!context.user) throw new Error('Sorry, you must be logged in to remove a session.');
     Sessions.remove(args);
     return args;
+  },
+  removeMultiSessions: async (root, { _id }, context) => {
+    const _ids = _id.split(',');
+    if (!context.user) throw new Error('Sorry, you must be logged in to remove a sessions.');
+    Sessions.remove({ _id: { $in: _ids } });
+    return { _id };
   }
 };

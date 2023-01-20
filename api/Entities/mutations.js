@@ -30,5 +30,11 @@ export default {
     if (!context.user) throw new Error('Sorry, you must be logged in to remove a entity.');
     Entities.remove(args);
     return args;
+  },
+  removeMultiEntities: async (root, { _id }, context) => {
+    const _ids = _id.split(',');
+    if (!context.user) throw new Error('Sorry, you must be logged in to remove entites.');
+    Entities.remove({ _id: { $in: _ids } });
+    return { _id };
   }
 };
