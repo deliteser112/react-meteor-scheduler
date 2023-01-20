@@ -117,18 +117,22 @@ const schema = {
       addSession(title: String, description: String, startTime: String, endTime: String): Session
       updateSession(_id: String!, title: String, description: String, startTime: String, endTime: String): Session
       removeSession(_id: String!): Session
+      removeMultiSessions(_id: String!): Session
 
       addEntity(title: String): Entity
       updateEntity(_id: String!, title: String): Entity
       removeEntity(_id: String!): Entity
+      removeMultiEntities(_id: String!): Entity
 
       addLocation(title: String, address: String, entity: EntityInput): Location
       updateLocation(_id: String!, title: String, address: String, entity: EntityInput): Location
       removeLocation(_id: String!): Location
+      removeMultiLocations(_id: String!): Location
 
       addArea(title: String, alternateName: String): Area
       updateArea(_id: String!, title: String, alternateName: String): Area
       removeArea(_id: String!): Area
+      removeMultiAreas(_id: String!): Area
 
       addTemplate(template: TemplateInput): Template
       updateTemplate(template: TemplateInput): Template

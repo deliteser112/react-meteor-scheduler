@@ -23,3 +23,9 @@ mutation removeArea($_id: String!) {
     _id
   }
 }
+
+mutation removeMultiAreas($_id: String!) {
+  removeMultiAreas(_id: $_id) {
+    _id
+  }
+}

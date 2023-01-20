@@ -52,7 +52,7 @@ export default function Schedule() {
 
   return (
     <Page title="Schedule">
-      <Container maxWidth="lg">
+      <Container maxWidth="xl">
         <HeaderBreadcrumbs
           heading="Schedules"
           links={[{ name: 'Dashboard', href: PATH_DASHBOARD.root }, { name: 'Schedule' }]}

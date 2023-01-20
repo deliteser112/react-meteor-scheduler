@@ -27,3 +27,9 @@ mutation removeSession($_id: String!) {
     _id
   }
 }
+
+mutation removeMultiSessions($_id: String!) {
+  removeMultiSessions(_id: $_id) {
+    _id
+  }
+}

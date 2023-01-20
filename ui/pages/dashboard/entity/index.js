@@ -20,12 +20,16 @@ import EntityList from './EntityList';
 
 // queries & mutations
 import { entities as entitiesQuery } from '../../../_queries/Entities.gql';
-import { removeEntity as removeEntityMutation } from '../../../_mutations/Entities.gql';
+import {
+  removeEntity as removeEntityMutation,
+  removeMultiEntities as removeMultiEntitiesMutation
+} from '../../../_mutations/Entities.gql';
 // ----------------------------------------------------------------------
 
 export default function Entity() {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [removeEntity] = useMutation(removeEntityMutation);
+  const [removeMultiEntities] = useMutation(removeMultiEntitiesMutation);
 
   const { loading, data } = useQuery(entitiesQuery);
 
@@ -33,6 +37,26 @@ export default function Entity() {
 
   const deleteEntity = (_id) => {
     removeEntity({
+      variables: {
+        _id
+      },
+      refetchQueries: [{ query: entitiesQuery }]
+    }).then(async (res) => {
+      enqueueSnackbar('Deleted successfully!', {
+        variant: 'success',
+        autoHideDuration: 2500,
+        action: (key) => (
+          <IconButton size="small" onClick={() => closeSnackbar(key)}>
+            <Iconify icon="eva:close-outline" />
+          </IconButton>
+        )
+      });
+    });
+  };
+
+  const deleteMultiEntities = (ids) => {
+    const _id = ids.toString();
+    removeMultiEntities({
       variables: {
         _id
       },
@@ -67,7 +91,12 @@ export default function Entity() {
             </Button>
           }
         />
-        <EntityList isLoading={loading} entityList={entities} onDelete={(id) => deleteEntity(id)} />
+        <EntityList
+          isLoading={loading}
+          entityList={entities}
+          onDelete={(id) => deleteEntity(id)}
+          onDeleteMultiRows={(ids) => deleteMultiEntities(ids)}
+        />
       </Container>
     </Page>
   );

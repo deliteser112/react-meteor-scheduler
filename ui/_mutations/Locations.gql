@@ -31,3 +31,9 @@ mutation removeLocation($_id: String!) {
     _id
   }
 }
+
+mutation removeMultiLocations($_id: String!) {
+  removeMultiLocations(_id: $_id) {
+    _id
+  }
+}

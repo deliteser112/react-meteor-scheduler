@@ -19,6 +19,7 @@ import useTable, { getComparator, emptyRows } from '../../../hooks/useTable';
 // components
 import Scrollbar from '../../../components/Scrollbar';
 import Iconify from '../../../components/Iconify';
+import ConfirmDialog from '../../../components/ConfirmDialog';
 
 import {
   TableNoData,
@@ -44,7 +45,7 @@ const TABLE_HEAD = [
 ];
 
 // ----------------------------------------------------------------------
-export default function AreaList({ areaList, isLoading, onDelete }) {
+export default function AreaList({ areaList, isLoading, onDelete, onDeleteMultiRows }) {
   const {
     dense,
     page,
@@ -71,6 +72,9 @@ export default function AreaList({ areaList, isLoading, onDelete }) {
   const [tableData, setTableData] = useState([]);
   const [filterName, setFilterName] = useState('');
 
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedItems, setSelectedItems] = useState([]);
+
   useEffect(() => {
     if (areaList.length) {
       setTableData(areaList);
@@ -89,10 +93,17 @@ export default function AreaList({ areaList, isLoading, onDelete }) {
     onDelete(id);
   };
 
+  const handleAgree = (isAgree) => {
+    setDialogOpen(false);
+    if (isAgree) {
+      onDeleteMultiRows(selectedItems);
+      setSelected([]);
+    }
+  };
+
   const handleDeleteRows = (selected) => {
-    const deleteRows = tableData.filter((row) => !selected.includes(row._id));
-    setSelected([]);
-    setTableData(deleteRows);
+    setDialogOpen(true);
+    setSelectedItems([...selected]);
   };
 
   const handleEditRow = (id) => {
@@ -112,7 +123,12 @@ export default function AreaList({ areaList, isLoading, onDelete }) {
   return (
     <Card>
       <AreaTableToolbar filterName={filterName} onFilterName={handleFilterName} />
-
+      <ConfirmDialog
+        onAgree={handleAgree}
+        isOpen={dialogOpen}
+        title="Scheduler | Confirm"
+        content="Are you sure to delete selected item(s)?"
+      />
       <Scrollbar>
         <TableContainer sx={{ minWidth: 960, position: 'relative' }}>
           {selected.length > 0 && (
@@ -202,7 +218,8 @@ export default function AreaList({ areaList, isLoading, onDelete }) {
 AreaList.propTypes = {
   isLoading: PropTypes.bool,
   areaList: PropTypes.array,
-  onDelete: PropTypes.func
+  onDelete: PropTypes.func,
+  onDeleteMultiRows: PropTypes.func
 };
 
 // ----------------------------------------------------------------------

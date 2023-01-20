@@ -21,3 +21,9 @@ mutation removeEntity($_id: String!) {
     _id
   }
 }
+
+mutation removeMultiEntities($_id: String!) {
+  removeMultiEntities(_id: $_id) {
+    _id
+  }
+}

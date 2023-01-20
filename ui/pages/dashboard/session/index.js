@@ -20,12 +20,16 @@ import SessionList from './SessionList';
 
 // queries & mutations
 import { sessions as sessionsQuery } from '../../../_queries/Sessions.gql';
-import { removeSession as removeSessionMutation } from '../../../_mutations/Sessions.gql';
+import {
+  removeSession as removeSessionMutation,
+  removeMultiSessions as removeMultiSessionsMutation
+} from '../../../_mutations/Sessions.gql';
 // ----------------------------------------------------------------------
 
 export default function Session() {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [removeSession] = useMutation(removeSessionMutation);
+  const [removeMultiSessions] = useMutation(removeMultiSessionsMutation);
 
   const { loading, data } = useQuery(sessionsQuery);
 
@@ -33,6 +37,26 @@ export default function Session() {
 
   const deleteSession = (_id) => {
     removeSession({
+      variables: {
+        _id
+      },
+      refetchQueries: [{ query: sessionsQuery }]
+    }).then(async (res) => {
+      enqueueSnackbar('Deleted successfully!', {
+        variant: 'success',
+        autoHideDuration: 2500,
+        action: (key) => (
+          <IconButton size="small" onClick={() => closeSnackbar(key)}>
+            <Iconify icon="eva:close-outline" />
+          </IconButton>
+        )
+      });
+    });
+  };
+
+  const deleteMultiSessions = (ids) => {
+    const _id = ids.toString();
+    removeMultiSessions({
       variables: {
         _id
       },
@@ -67,7 +91,12 @@ export default function Session() {
             </Button>
           }
         />
-        <SessionList isLoading={loading} sessionList={sessions} onDelete={(id) => deleteSession(id)} />
+        <SessionList
+          isLoading={loading}
+          sessionList={sessions}
+          onDelete={(id) => deleteSession(id)}
+          onDeleteMultiRows={(ids) => deleteMultiSessions(ids)}
+        />
       </Container>
     </Page>
   );
