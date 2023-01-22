@@ -24,7 +24,7 @@ import {
   TableNoData,
   TableSkeleton,
   TableEmptyRows,
-  TableHeadCustom,
+  TableHeadNoCheckBoxCustom,
   TableSelectedActions
 } from '../../../components/table';
 
@@ -48,7 +48,7 @@ const TABLE_HEAD = [
 ];
 
 // ----------------------------------------------------------------------
-export default function ScheduleList({ scheduleList, isLoading, onDelete }) {
+export default function ScheduleList({ scheduleList, isLoading, onDelete, onPreviewSchedule, isAdmin }) {
   const {
     dense,
     page,
@@ -141,7 +141,7 @@ export default function ScheduleList({ scheduleList, isLoading, onDelete }) {
           )}
 
           <Table size={dense ? 'small' : 'medium'}>
-            <TableHeadCustom
+            <TableHeadNoCheckBoxCustom
               order={order}
               orderBy={orderBy}
               headLabel={TABLE_HEAD}
@@ -164,10 +164,12 @@ export default function ScheduleList({ scheduleList, isLoading, onDelete }) {
                     <ScheduleTableRow
                       key={index}
                       row={row}
+                      isAdmin={isAdmin}
                       selected={selected.includes(row._id)}
                       onSelectRow={() => onSelectRow(row._id)}
                       onDeleteRow={() => handleDeleteRow(row._id)}
                       onEditRow={() => handleEditRow(row._id)}
+                      onPreviewSchedule={(_id) => onPreviewSchedule(_id)}
                     />
                   ) : (
                     !isNotFound && <TableSkeleton key={index} sx={{ height: denseHeight }} />
@@ -204,9 +206,11 @@ export default function ScheduleList({ scheduleList, isLoading, onDelete }) {
 }
 
 ScheduleList.propTypes = {
+  isAdmin: PropTypes.bool,
   isLoading: PropTypes.bool,
   scheduleList: PropTypes.array,
-  onDelete: PropTypes.func
+  onDelete: PropTypes.func,
+  onPreviewSchedule: PropTypes.func
 };
 
 // ----------------------------------------------------------------------

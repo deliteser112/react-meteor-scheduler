@@ -47,7 +47,7 @@ import {
 } from '../../../_mutations/Schedules.gql';
 import { schedules as schedulesQuery } from '../../../_queries/Schedules.gql';
 
-import { users as usersQuery } from '../../../_queries/Users.gql';
+import { allUsers as allUsersQuery } from '../../../_queries/Users.gql';
 import { editTemplate as editTemplateQuery } from '../../../_queries/Templates.gql';
 import { useState } from 'react';
 
@@ -75,8 +75,8 @@ export default function ScheduleNewForm({ isEdit, templates, currentSchedule }) 
   const { data } = useQuery(editTemplateQuery, { variables: { _id: templateId } });
   const template = data && data.template;
 
-  const userData = useQuery(usersQuery).data;
-  const users = (userData && userData.users && userData.users.users) || [];
+  const userData = useQuery(allUsersQuery).data;
+  const users = (userData && userData.allUsers) || [];
 
   const NewScheduleSchema = Yup.object().shape({
     title: Yup.string().required('Title is required')
@@ -124,6 +124,7 @@ export default function ScheduleNewForm({ isEdit, templates, currentSchedule }) 
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       const mutation = isEdit ? updateSchedule : addSchedule;
+      console.log('TEmplate', template);
       const scheduleToAddOrUpdate = {
         title,
         startDate,
@@ -133,6 +134,7 @@ export default function ScheduleNewForm({ isEdit, templates, currentSchedule }) 
           title: template.title
         },
         state: 'Published',
+        locationId: template.location._id,
         scheduleTable
       };
 

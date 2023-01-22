@@ -27,6 +27,7 @@ import {
   TableSkeleton,
   TableEmptyRows,
   TableHeadCustom,
+  TableHeadNoCheckBoxCustom,
   TableSelectedActions
 } from '../../../components/table';
 // sections
@@ -126,7 +127,7 @@ export default function UserList({ isLoading, userList, onDeleteRow }) {
           )}
 
           <Table size={dense ? 'small' : 'medium'}>
-            <TableHeadCustom
+            <TableHeadNoCheckBoxCustom
               order={order}
               orderBy={orderBy}
               headLabel={TABLE_HEAD}

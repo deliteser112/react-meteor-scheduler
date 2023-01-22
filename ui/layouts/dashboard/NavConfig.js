@@ -22,6 +22,17 @@ const navConfig = [
       //   path: `${PATH_DASHBOARD.document.root}`,
       //   icon: getIcon('gala:file-doc')
       // },
+
+      {
+        title: 'schedules',
+        path: `${PATH_DASHBOARD.schedule.root}`,
+        icon: getIcon('ant-design:schedule-outlined')
+      }
+    ]
+  },
+  {
+    subheader: 'Admin',
+    items: [
       {
         title: 'sessions',
         path: `${PATH_DASHBOARD.session.root}`,
@@ -42,16 +53,6 @@ const navConfig = [
         path: `${PATH_DASHBOARD.template.root}`,
         icon: getIcon('fluent:mail-template-20-regular')
       },
-      {
-        title: 'schedules',
-        path: `${PATH_DASHBOARD.schedule.root}`,
-        icon: getIcon('ant-design:schedule-outlined')
-      }
-    ]
-  },
-  {
-    subheader: 'Admin',
-    items: [
       {
         title: 'entities',
         path: `${PATH_DASHBOARD.entity.root}`,

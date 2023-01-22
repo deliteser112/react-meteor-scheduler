@@ -26,6 +26,7 @@ export default `
     endDate: String
     template: ScheduleTemplateInput
     state: String
+    locationId: String
     scheduleTable: [[CellInput]]
   }
 
@@ -36,6 +37,7 @@ export default `
     endDate: String
     template: ScheduleTemplate
     state: String
+    locationId: String
     scheduleTable: [[Cell]]
     createdAt: String
     updatedAt: String

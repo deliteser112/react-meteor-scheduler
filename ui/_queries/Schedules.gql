@@ -11,6 +11,7 @@ query schedules {
 			title
 		}
 		state
+		locationId
 		createdAt
 		updatedAt
 	}

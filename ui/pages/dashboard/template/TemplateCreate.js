@@ -21,7 +21,7 @@ import { editTemplate as editTemplateQuery } from '../../../_queries/Templates.g
 import { locations as locationsQuery } from '../../../_queries/Locations.gql';
 import { sessions as sessionsQuery } from '../../../_queries/Sessions.gql';
 import { areas as areasQuery } from '../../../_queries/Areas.gql';
-import { users as usersQuery } from '../../../_queries/Users.gql';
+import { allUsers as allUsersQuery } from '../../../_queries/Users.gql';
 // ----------------------------------------------------------------------
 
 export default function TemplateCreate() {
@@ -47,8 +47,8 @@ export default function TemplateCreate() {
   const areas = (aData && aData.areas) || [];
 
   // get users
-  const uData = useQuery(usersQuery).data;
-  const users = (uData && uData.users && uData.users.users) || [];
+  const uData = useQuery(allUsersQuery).data;
+  const users = (uData && uData.allUsers) || [];
 
   return (
     <Page title="Template">

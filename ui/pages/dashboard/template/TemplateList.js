@@ -24,7 +24,7 @@ import {
   TableNoData,
   TableSkeleton,
   TableEmptyRows,
-  TableHeadCustom,
+  TableHeadNoCheckBoxCustom,
   TableSelectedActions
 } from '../../../components/table';
 
@@ -138,7 +138,7 @@ export default function TemplateList({ templateList, isLoading, onDelete }) {
           )}
 
           <Table size={dense ? 'small' : 'medium'}>
-            <TableHeadCustom
+            <TableHeadNoCheckBoxCustom
               order={order}
               orderBy={orderBy}
               headLabel={TABLE_HEAD}
