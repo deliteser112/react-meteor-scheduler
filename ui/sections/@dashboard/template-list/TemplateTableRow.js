@@ -49,16 +49,13 @@ export default function TemplateTableRow({ row, selected, onEditRow, onSelectRow
 
   return (
     <TableRow hover selected={selected}>
-      <TableCell padding="checkbox">
+      <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
         <ConfirmDialog
           onAgree={handleAgree}
           isOpen={dialogOpen}
           title="Scheduler | Confirm"
           content="Are you sure to delete this item?"
         />
-        <Checkbox checked={selected} onClick={onSelectRow} />
-      </TableCell>
-      <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
         <Image
           disabledEffect
           alt={title}

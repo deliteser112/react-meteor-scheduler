@@ -11,6 +11,7 @@ export default {
       endDate: schedule.endDate,
       state: schedule.state,
       template: schedule.template,
+      locationId: schedule.locationId,
       scheduleTable: schedule.scheduleTable,
       createdAt: date,
       updatedAt: date

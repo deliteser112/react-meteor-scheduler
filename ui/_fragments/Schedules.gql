@@ -8,6 +8,7 @@ fragment ScheduleAttributes on Schedule {
 		title
 	}
 	state
+	locationId
 	scheduleTable {
 		list
 		isBlocked

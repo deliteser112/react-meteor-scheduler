@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types';
-import { sentenceCase } from 'change-case';
 import React, { useState } from 'react';
 // @mui
-import { TableRow, TableCell, MenuItem, Checkbox, Stack, Avatar, Typography } from '@mui/material';
+import { TableRow, TableCell, MenuItem, Stack, Typography } from '@mui/material';
 // components
 import { TableMoreMenu } from '../../../components/table';
 import Iconify from '../../../components/Iconify';
@@ -18,7 +17,7 @@ UserTableRow.propTypes = {
   onDeleteRow: PropTypes.func
 };
 
-export default function UserTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
+export default function UserTableRow({ row, selected, onEditRow, onDeleteRow }) {
   const { _id, name, emailAddress, emailVerified, oAuthProvider, avatarUrl } = row;
 
   const [openMenu, setOpenMenuActions] = useState(null);
@@ -44,9 +43,6 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
 
   return (
     <TableRow hover selected={selected}>
-      <TableCell padding="checkbox">
-        <Checkbox checked={selected} onClick={onSelectRow} />
-      </TableCell>
       <TableCell component="th" scope="row" padding="none">
         <Stack direction="row" alignItems="center" spacing={2}>
           <MyAvatar src={avatarUrl} displayName={`${name.first} ${name.last ? name.last : ''}`} />

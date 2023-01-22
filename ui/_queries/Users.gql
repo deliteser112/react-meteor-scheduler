@@ -32,6 +32,35 @@ query users {
 	}
 }
 
+query allUsers {
+	allUsers {
+		_id
+		name {
+			first
+			last
+		}
+		roles {
+			_id
+			name
+			inRole
+		}
+		class
+		entities {
+			_id
+			title
+		}
+		locations {
+			_id
+			title
+		}
+		username
+		avatarUrl
+		emailAddress
+		emailVerified
+		oAuthProvider
+	}
+}
+
 query user($_id: String) {
 	user(_id: $_id) {
 		...UserAttributes

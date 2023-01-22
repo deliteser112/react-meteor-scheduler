@@ -99,6 +99,8 @@ const schema = {
       # user management
       user(_id: String): User
       users(currentPage: Int, perPage: Int, search: String): Users
+      allUsers: [User]
+      
       userSettings: [UserSetting]
       exportUserData: UserDataExport
       oAuthServices(services: [String]): [String]
