@@ -32,8 +32,6 @@ export default function TemplateCreate() {
   const { data } = useQuery(editTemplateQuery, { variables: { _id: templateId } });
   const currentTemplate = (isEdit && data && data.template) || {};
 
-  console.log('AAA:', currentTemplate);
-
   // get locations
   const eData = useQuery(locationsQuery).data;
   const locations = (eData && eData.locations) || [];
