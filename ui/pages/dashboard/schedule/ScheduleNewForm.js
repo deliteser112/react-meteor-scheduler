@@ -124,7 +124,6 @@ export default function ScheduleNewForm({ isEdit, templates, currentSchedule }) 
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       const mutation = isEdit ? updateSchedule : addSchedule;
-      console.log('TEmplate', template);
       const scheduleToAddOrUpdate = {
         title,
         startDate,
@@ -133,10 +132,11 @@ export default function ScheduleNewForm({ isEdit, templates, currentSchedule }) 
           _id: template._id,
           title: template.title
         },
-        state: 'Published',
+        state: 'Drafted',
         locationId: template.location._id,
         scheduleTable
       };
+      console.log('Saving', scheduleToAddOrUpdate);
 
       if (isEdit) {
         scheduleToAddOrUpdate._id = currentSchedule._id;
@@ -218,7 +218,7 @@ export default function ScheduleNewForm({ isEdit, templates, currentSchedule }) 
               </FormControl>
 
               <Box sx={{ position: 'relative' }}>
-                {template && (
+                {template && users.length > 0 && (
                   <ScheduleTemplate
                     isEdit={isEdit}
                     currentSchedule={currentSchedule}
@@ -231,7 +231,7 @@ export default function ScheduleNewForm({ isEdit, templates, currentSchedule }) 
             </Stack>
             <Box m={2} />
             <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-              {!isEdit ? 'Publish Schedule' : 'Save Changes'}
+              {!isEdit ? 'Save as draft' : 'Save Changes'}
             </LoadingButton>
           </Card>
         </Grid>
