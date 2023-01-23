@@ -109,7 +109,7 @@ export default function Template() {
 
       const mutation = addTemplate;
       const templateToAddOrUpdate = {
-        title,
+        title: `${title} - duplicated`,
         location: {
           _id: location._id,
           title: location.title,

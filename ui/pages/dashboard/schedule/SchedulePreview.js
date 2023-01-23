@@ -44,7 +44,7 @@ export default function SchedulePreview({ currentSchedule, template, users }) {
   // Normally you would want to split things out into separate components.
   // But in this example everything is just done in one place for simplicity
   return (
-    <div className="schedule-content" style={{ marginRight: 0 }}>
+    <div id="schedule_content" className="schedule-content" style={{ marginRight: 0 }}>
       <div className="d-flex">
         <div className="flex-300" style={{ backgroundColor: '#ffc7ce' }} />
         {sessions.map((item) => (
