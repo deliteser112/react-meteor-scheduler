@@ -40,12 +40,13 @@ const TABLE_HEAD = [
   { id: 'title', label: 'Title', alignRight: false },
   { id: 'location', label: 'Location', alignRight: false },
   { id: 'allocationType', label: 'Allocation Type', alignRight: false },
+  { id: 'status', label: 'Status', alignRight: false },
   { id: 'createdAt', label: 'Created At', alignRight: false },
   { id: '' }
 ];
 
 // ----------------------------------------------------------------------
-export default function TemplateList({ templateList, isLoading, onDelete }) {
+export default function TemplateList({ templateList, isLoading, onDelete, onDuplicate }) {
   const {
     dense,
     page,
@@ -88,6 +89,10 @@ export default function TemplateList({ templateList, isLoading, onDelete }) {
     setSelected([]);
     setTableData(deleteRow);
     onDelete(id);
+  };
+
+  const handleDuplicateRow = (id) => {
+    onDuplicate(id);
   };
 
   const handleDeleteRows = (selected) => {
@@ -164,6 +169,7 @@ export default function TemplateList({ templateList, isLoading, onDelete }) {
                       selected={selected.includes(row._id)}
                       onSelectRow={() => onSelectRow(row._id)}
                       onDeleteRow={() => handleDeleteRow(row._id)}
+                      onDuplicateRow={() => handleDuplicateRow(row._id)}
                       onEditRow={() => handleEditRow(row._id)}
                     />
                   ) : (
@@ -203,7 +209,8 @@ export default function TemplateList({ templateList, isLoading, onDelete }) {
 TemplateList.propTypes = {
   isLoading: PropTypes.bool,
   templateList: PropTypes.array,
-  onDelete: PropTypes.func
+  onDelete: PropTypes.func,
+  onDuplicate: PropTypes.func
 };
 
 // ----------------------------------------------------------------------

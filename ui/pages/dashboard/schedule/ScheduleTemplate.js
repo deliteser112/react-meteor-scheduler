@@ -115,7 +115,6 @@ export default function ScheduleTemplate({ isEdit, currentSchedule, template, us
       const item = users.find((user) => user._id === _id);
       return { ...item, id: uuid() };
     });
-    console.log('ASSIGNUSER:', assUsers);
     setAssignedUsers([...assUsers]);
   }, [staff, users]);
 
