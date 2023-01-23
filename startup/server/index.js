@@ -26,7 +26,6 @@ Cloudinary.config({
 Meteor.startup(() => {
   if (!Accounts.findUserByEmail(SEED_EMAIL)) {
     Roles.createRole('user');
-    Roles.createRole('entity');
     Roles.createRole('admin');
     Accounts.createUser({
       email: SEED_EMAIL,

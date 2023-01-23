@@ -6,6 +6,12 @@ import removeUser from './actions/removeUser';
 import sendWelcomeEmail from './actions/sendWelcomeEmail';
 
 export default {
+  addUser: async (root, args, context) => {
+    if (!context.user) throw new Error('Sorry, you must be logged in to add a new user.');
+    const { user } = args;
+    const userId = Accounts.createUser({ ...user });
+    return userId;
+  },
   updateUser: async (parent, args, context) => {
     await updateUser({
       currentUser: context.user,

@@ -2,8 +2,8 @@
 import { useQuery } from '@apollo/react-hooks';
 import { capitalCase } from 'change-case';
 
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams, useLocation } from 'react-router-dom';
 
 // material
 import { styled } from '@mui/material/styles';
@@ -44,6 +44,8 @@ const TabsWrapperStyle = styled('div')(({ theme }) => ({
 
 export default function UserProfile() {
   const { userId } = useParams();
+  const { pathname } = useLocation();
+  const isEdit = !!pathname.includes('edit');
 
   // get user information
   const { data, loading } = useQuery(userQuery, { variables: { _id: userId } });
@@ -77,12 +79,14 @@ export default function UserProfile() {
     {
       value: 'profile',
       icon: <Iconify icon="et:profile-male" width={20} height={20} />,
-      component: <ProfileGeneral currentUser={user} isEdit />
+      component: <ProfileGeneral currentUser={user} isEdit={isEdit} />
     },
     {
       value: 'entity',
       icon: <Iconify icon="cil:school" width={20} height={20} />,
-      component: <ProfileEntity currentUser={user} entities={entities} locations={locations} userId={user._id} isEdit />
+      component: (
+        <ProfileEntity currentUser={user} entities={entities} locations={locations} userId={user._id} isEdit={isEdit} />
+      )
     },
     {
       value: 'settings',

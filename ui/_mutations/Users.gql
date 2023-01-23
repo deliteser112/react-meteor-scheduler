@@ -1,5 +1,11 @@
 #import "../_queries/Users.gql"
 
+mutation addUser($user: UserInput) {
+  addUser(user: $user) {
+    ...UserAttributes
+  }
+}
+
 mutation updateUser($user: UserInput) {
   updateUser(user: $user) {
     ...UserAttributes

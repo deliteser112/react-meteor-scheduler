@@ -91,6 +91,7 @@ export const PATH_DASHBOARD = {
   // users
   user: {
     root: path(ROOTS_DASHBOARD, '/users'),
+    create: path(ROOTS_DASHBOARD, '/users/create'),
     edit: (name) => path(ROOTS_DASHBOARD, `/users/${name}/edit`),
     settings: path(ROOTS_DASHBOARD, '/user-settings')
   },
