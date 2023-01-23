@@ -6,7 +6,6 @@
 
 .schedule-content {
   overflow-x: auto;
-  margin-right: 235px;
   padding: 10px;
 }
 
@@ -15,14 +14,17 @@
   top: 0;
   right: 0;
   bottom: 0;
-  width: 230px;
+}
+
+.kiosk-content {
+  position: 'relative';
+  height: 100%;
   padding: 10px 15px;
-  /* padding-top: 100px; */
   flex: 0 0 150px;
   font-family: sans-serif;
-  /* background-color: white; */
   border-radius: 10px;
   box-shadow: rgb(50 50 93 / 25%) 0px 30px 60px -12px, rgb(0 0 0 / 30%) 0px 18px 36px -18px;
+  border: 1px dashed #ddd;
 }
 
 .kiosk-item {

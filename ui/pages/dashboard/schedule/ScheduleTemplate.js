@@ -1,12 +1,13 @@
 import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
+
 import uuid from 'uuid/v4';
 import { capitalCase } from 'change-case';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 // mui
-import { Divider, Stack, AvatarGroup, Typography, IconButton } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { Divider, Stack, AvatarGroup, Typography, IconButton, Box, Button } from '@mui/material';
+import { styled, useTheme } from '@mui/material/styles';
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 
 // components
@@ -88,8 +89,12 @@ export default function ScheduleTemplate({ isEdit, currentSchedule, template, us
     sessions
   } = template;
 
+  const theme = useTheme();
+
   const [scheduleData, setScheduleData] = useState([]);
   const [assignedUsers, setAssignedUsers] = useState([]);
+
+  const [toggleSidebar, setToggleSidebar] = useState(true);
 
   useEffect(() => {
     if (isEdit && currentSchedule) {
@@ -110,6 +115,7 @@ export default function ScheduleTemplate({ isEdit, currentSchedule, template, us
       const item = users.find((user) => user._id === _id);
       return { ...item, id: uuid() };
     });
+    console.log('ASSIGNUSER:', assUsers);
     setAssignedUsers([...assUsers]);
   }, [staff, users]);
 
@@ -164,94 +170,127 @@ export default function ScheduleTemplate({ isEdit, currentSchedule, template, us
     <DragDropContext onDragEnd={onDragEnd}>
       <Droppable droppableId="assignedUsers" isDropDisabled={true}>
         {(provided, snapshot) => (
-          <div
-            className="kiosk"
-            ref={provided.innerRef}
-            style={{
-              border: `1px
-              ${snapshot.isDraggingOver ? 'dashed #000' : 'solid #ddd'}`
-            }}
-          >
-            <Typography
-              variant="overline"
+          <div className="kiosk" ref={provided.innerRef}>
+            <Box
               sx={{
-                mt: 2,
-                mb: 1,
-                display: 'block',
-                color: 'info.main'
+                position: 'absolute',
+                top: 10,
+                right: 5,
+                borderRadius: 1,
+                backgroundColor: theme.palette.background.paper,
+                boxShadow: '-12px 12px 32px -4px rgb(99 115 129 / 36%)',
+                border: '1px dashed #ddd',
+                ...(toggleSidebar && { display: 'none' })
               }}
             >
-              Template Details
-            </Typography>
+              <Button
+                aria-label="delete"
+                size="small"
+                onClick={() => setToggleSidebar(!toggleSidebar)}
+                sx={{ minWidth: 0 }}
+              >
+                <Iconify icon={'material-symbols:arrow-back-ios-new-rounded'} sx={{ width: 24, height: 24 }} />
+              </Button>
+            </Box>
+            <Box className="kiosk-content" sx={{ width: 230, ...(!toggleSidebar && { display: 'none' }) }}>
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: 10,
+                  right: 5,
+                  borderRadius: 1,
+                  backgroundColor: theme.palette.background.paper
+                }}
+              >
+                <IconButton aria-label="delete" size="small" onClick={() => setToggleSidebar(!toggleSidebar)}>
+                  <Iconify icon={'material-symbols:arrow-forward-ios-rounded'} sx={{ width: 24, height: 24 }} />
+                </IconButton>
+              </Box>
 
-            <Divider sx={{ borderStyle: 'dashed', mb: 2 }} />
+              <Typography
+                variant="overline"
+                sx={{
+                  mt: 2,
+                  mb: 1,
+                  display: 'block',
+                  color: 'info.main'
+                }}
+              >
+                Template Details
+              </Typography>
 
-            <Typography variant="body2">
-              Allocation Type: <b>{capitalCase(allocationType)}</b>
-            </Typography>
-            <Divider sx={{ borderStyle: 'dashed', mb: 1 }} />
-            <Typography variant="body2">
-              Area Display Type: <b>{capitalCase(areaDisplayType)}</b>
-            </Typography>
-            <Divider sx={{ borderStyle: 'dashed', mb: 1 }} />
-            <Typography variant="body2">
-              Session Display Type: <b>{capitalCase(sessionDisplayType)}</b>
-            </Typography>
-            <Divider sx={{ borderStyle: 'dashed', mb: 1 }} />
-            <Typography variant="body2">
-              Staff Display Type: <b>{capitalCase(staffDisplayType)}</b>
-            </Typography>
-            <Divider sx={{ borderStyle: 'dashed', mb: 1 }} />
+              <Divider sx={{ borderStyle: 'dashed', mb: 2 }} />
 
-            <Typography
-              variant="overline"
-              sx={{
-                mt: 5,
-                mb: 1,
-                display: 'block',
-                color: 'info.main'
-              }}
-            >
-              Assigned Users
-            </Typography>
+              <Typography variant="body2">
+                Allocation Type: <b>{capitalCase(allocationType)}</b>
+              </Typography>
+              <Divider sx={{ borderStyle: 'dashed', mb: 1 }} />
+              <Typography variant="body2">
+                Area Display Type: <b>{capitalCase(areaDisplayType)}</b>
+              </Typography>
+              <Divider sx={{ borderStyle: 'dashed', mb: 1 }} />
+              <Typography variant="body2">
+                Session Display Type: <b>{capitalCase(sessionDisplayType)}</b>
+              </Typography>
+              <Divider sx={{ borderStyle: 'dashed', mb: 1 }} />
+              <Typography variant="body2">
+                Staff Display Type: <b>{capitalCase(staffDisplayType)}</b>
+              </Typography>
+              <Divider sx={{ borderStyle: 'dashed', mb: 1 }} />
 
-            <Divider sx={{ borderStyle: 'dashed', mb: 2 }} />
+              <Typography
+                variant="overline"
+                sx={{
+                  mt: 5,
+                  mb: 1,
+                  display: 'block',
+                  color: 'info.main'
+                }}
+              >
+                Assigned Users
+              </Typography>
 
-            {assignedUsers.map((item, index) => (
-              <Draggable key={item.id} draggableId={item.id} index={index}>
-                {(provided, snapshot) => (
-                  <>
-                    <div
-                      className="kiosk-item"
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      // isDragging={snapshot.isDragging}
-                      style={{ ...provided.draggableProps.style }}
-                    >
-                      {capitalCase(
-                        staffDisplayType === 'name' || !item.class
-                          ? `${getStringName(item.name.first, item.name.last)}`
-                          : `${item.class}`
-                      )}
-                    </div>
-                    {snapshot.isDragging && (
-                      <div className="clone" style={{ backgroundColor: 'green', color: 'white', padding: '5px 10px' }}>
+              <Divider sx={{ borderStyle: 'dashed', mb: 2 }} />
+
+              {assignedUsers.map((item, index) => (
+                <Draggable key={item.id} draggableId={item.id} index={index}>
+                  {(provided, snapshot) => (
+                    <>
+                      <div
+                        className="kiosk-item"
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        // isDragging={snapshot.isDragging}
+                        style={{ ...provided.draggableProps.style }}
+                      >
                         {capitalCase(
                           staffDisplayType === 'name' || !item.class
                             ? `${getStringName(item.name.first, item.name.last)}`
                             : `${item.class}`
                         )}
                       </div>
-                    )}
-                  </>
-                )}
-              </Draggable>
-            ))}
+                      {snapshot.isDragging && (
+                        <div
+                          className="clone"
+                          style={{ backgroundColor: 'green', color: 'white', padding: '5px 10px' }}
+                        >
+                          {capitalCase(
+                            staffDisplayType === 'name' || !item.class
+                              ? `${getStringName(item.name.first, item.name.last)}`
+                              : `${item.class}`
+                          )}
+                        </div>
+                      )}
+                    </>
+                  )}
+                </Draggable>
+              ))}
+            </Box>
           </div>
         )}
       </Droppable>
-      <div className="schedule-content">
+      <Box className="schedule-content" sx={{ marginRight: '235px', ...(!toggleSidebar && { marginRight: 0 }) }}>
         <div className="d-flex">
           <div className="flex-300" style={{ backgroundColor: '#ffc7ce' }} />
           {sessions.map((item) => (
@@ -376,7 +415,7 @@ export default function ScheduleTemplate({ isEdit, currentSchedule, template, us
             })}
           </div>
         </div>
-      </div>
+      </Box>
     </DragDropContext>
   );
 }
