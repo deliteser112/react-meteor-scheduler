@@ -111,6 +111,14 @@ export default function Router() {
           )
         },
         {
+          path: 'users/create',
+          element: (
+            <RoleBasedGuard>
+              <UserCreate />
+            </RoleBasedGuard>
+          )
+        },
+        {
           path: 'users/:userId/edit',
           element: (
             <RoleBasedGuard>
@@ -223,6 +231,7 @@ const ScheduleTemplate = Loadable(lazy(() => import('../pages/dashboard/schedule
 
 // users
 const User = Loadable(lazy(() => import('../pages/dashboard/user')));
+const UserCreate = Loadable(lazy(() => import('../pages/dashboard/user/UserCreate')));
 const UserProfile = Loadable(lazy(() => import('../pages/dashboard/user-profile')));
 
 // user settings

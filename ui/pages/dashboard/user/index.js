@@ -1,6 +1,7 @@
 import React from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 // @mui
-import { Container } from '@mui/material';
+import { Container, Button } from '@mui/material';
 
 // graphql & collections
 import { useQuery, useMutation } from '@apollo/react-hooks';
@@ -13,6 +14,7 @@ import { removeUser as removeUserMutation } from '../../../_mutations/Users.gql'
 import Page from '../../../components/Page';
 import UserList from './UserList';
 import HeaderBreadcrumbs from '../../../components/HeaderBreadcrumbs';
+import Iconify from '../../../components/Iconify';
 
 // routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
@@ -28,7 +30,7 @@ export default function Users() {
   const handleDeleteUser = (_id) => {
     removeUser({
       variables: {
-        _id,
+        _id
       },
       refetchQueries: [{ query: usersQuery }]
     });
@@ -40,6 +42,16 @@ export default function Users() {
         <HeaderBreadcrumbs
           heading="Users"
           links={[{ name: 'Dashboard', href: PATH_DASHBOARD.root }, { name: 'Users' }]}
+          action={
+            <Button
+              variant="contained"
+              component={RouterLink}
+              to={PATH_DASHBOARD.user.create}
+              startIcon={<Iconify icon="eva:plus-fill" />}
+            >
+              Create User
+            </Button>
+          }
         />
         <UserList isLoading={loading} userList={users} onDeleteRow={handleDeleteUser} />
       </Container>

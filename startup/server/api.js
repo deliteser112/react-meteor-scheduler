@@ -146,6 +146,7 @@ const schema = {
 
       # ------------------------------- ### ---------------------------------- #
       # user management
+      addUser(user: UserInput): User
       updateUser(user: UserInput): User
       removeUser(_id: String): User
       addUserSetting(setting: UserSettingInput): UserSetting
