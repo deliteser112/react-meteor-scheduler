@@ -1,3 +1,5 @@
+import { jsPDF } from 'jspdf';
+import domtoimage from 'dom-to-image';
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
@@ -76,6 +78,8 @@ export default function SchedulePreviewDialog({ scheduleId, isOpen, onClose }) {
   const [template, setTemplate] = useState({});
   const [users, setUsers] = useState([]);
 
+  const [scheduleTitle, setScheduleTitle] = useState('');
+
   const scheData = useQuery(editScheduleQuery, { variables: { _id: scheduleId } }).data;
   const currentSchedule = scheData && scheData.schedule;
 
@@ -87,8 +91,9 @@ export default function SchedulePreviewDialog({ scheduleId, isOpen, onClose }) {
 
   useEffect(() => {
     if (currentSchedule && currentSchedule.template) {
-      const { template } = currentSchedule;
+      const { title, template } = currentSchedule;
       setTemplateId(template._id);
+      setScheduleTitle(title);
     }
   }, [currentSchedule]);
 
@@ -109,6 +114,21 @@ export default function SchedulePreviewDialog({ scheduleId, isOpen, onClose }) {
     onClose();
   };
 
+  const handleDownloadPDF = () => {
+    const scheduleContent = document.getElementById('schedule_content');
+
+    const pdfTitle = `${scheduleTitle}-${new Date().getTime()}.pdf`;
+    const conversionRate = 0.2645833333;
+    const width = scheduleContent.clientWidth * conversionRate;
+    const height = scheduleContent.clientHeight * conversionRate + 20;
+    const pdf = new jsPDF('p', 'mm', [width, height]);
+
+    domtoimage.toPng(scheduleContent).then((schedule) => {
+      pdf.addImage(schedule, 'PNG', 10, 10);
+      pdf.save(pdfTitle);
+    });
+  };
+
   return (
     <BootstrapDialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
       <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose}>
@@ -121,7 +141,11 @@ export default function SchedulePreviewDialog({ scheduleId, isOpen, onClose }) {
         )}
       </DialogContent>
       <DialogActions>
-        <Button variant="contained" startIcon={<Iconify icon={'ant-design:file-pdf-filled'} width={20} height={20} />}>
+        <Button
+          variant="contained"
+          onClick={handleDownloadPDF}
+          startIcon={<Iconify icon={'ant-design:file-pdf-filled'} width={20} height={20} />}
+        >
           Download as PDF
         </Button>
       </DialogActions>
