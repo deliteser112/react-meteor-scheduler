@@ -23,7 +23,7 @@ EntityTableRow.propTypes = {
 export default function EntityTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
   const { title, cover, createdAt } = row;
 
-  const mockImageUrl = '/assets/entity.png';
+  const mockImageUrl = '/assets/document.png';
 
   const [openMenu, setOpenMenuActions] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);

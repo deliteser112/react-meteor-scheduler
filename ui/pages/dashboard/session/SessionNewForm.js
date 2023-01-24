@@ -125,6 +125,8 @@ export default function SessionNewEditForm({ isEdit, currentSession }) {
         sessionToAddOrUpdate._id = currentSession._id;
       }
 
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      
       mutation({
         variables: {
           ...sessionToAddOrUpdate
