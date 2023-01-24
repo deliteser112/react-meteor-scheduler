@@ -167,7 +167,7 @@ export default function Template() {
 
   return (
     <Page title="Template">
-      <Container maxWidth="lg">
+      <Container maxWidth="xl">
         <HeaderBreadcrumbs
           heading="Templates"
           links={[{ name: 'Dashboard', href: PATH_DASHBOARD.root }, { name: 'Template' }]}
