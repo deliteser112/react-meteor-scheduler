@@ -56,7 +56,7 @@ export default function ScheduleTableRow({
 
   const handlePublishAgree = (isAgree) => {
     setPublishDialogOpen(false);
-    if (isAgree) onPublishSchedule();
+    if (isAgree) onPublishSchedule(state);
   };
 
   const handleOpenMenu = (event) => {
@@ -81,7 +81,7 @@ export default function ScheduleTableRow({
           onAgree={handlePublishAgree}
           isOpen={publishDialogOpen}
           title="Scheduler | Confirm"
-          content="Are you sure to publish this schedule?"
+          content={`Are you sure to ${state === 'Published' ? 'back to Drafted' : 'publish'} this schedule?`}
         />
         <Image
           disabledEffect
@@ -143,10 +143,12 @@ export default function ScheduleTableRow({
                     handlePublish();
                     handleCloseMenu();
                   }}
-                  sx={{ color: 'info.main' }}
+                  sx={{ color: state === 'Drafted' ? 'info.main' : 'warning.dark' }}
                 >
-                  <Iconify icon={'ic:baseline-published-with-changes'} />
-                  Publish Template
+                  <Iconify
+                    icon={state === 'Drafted' ? 'ic:baseline-published-with-changes' : 'fa-solid:drafting-compass'}
+                  />
+                  {state === 'Published' ? 'Back to Drafted' : 'Publish Template'}
                 </MenuItem>
               </>
             }

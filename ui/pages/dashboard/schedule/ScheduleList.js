@@ -176,7 +176,7 @@ export default function ScheduleList({
                       onSelectRow={() => onSelectRow(row._id)}
                       onDeleteRow={() => handleDeleteRow(row._id)}
                       onEditRow={() => handleEditRow(row._id)}
-                      onPublishSchedule={() => onPublishSchedule(row._id)}
+                      onPublishSchedule={(state) => onPublishSchedule(row._id, state)}
                       onPreviewSchedule={(_id) => onPreviewSchedule(_id)}
                     />
                   ) : (
