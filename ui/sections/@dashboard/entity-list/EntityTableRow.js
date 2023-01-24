@@ -1,10 +1,8 @@
 import PropTypes from 'prop-types';
-import { sentenceCase } from 'change-case';
 import React, { useState } from 'react';
 // @mui
 import { TableRow, TableCell, MenuItem, Checkbox, Typography } from '@mui/material';
 // components
-import Label from '../../../components/Label';
 import Image from '../../../components/Image';
 import { TableMoreMenu } from '../../../components/table';
 import Iconify from '../../../components/Iconify';

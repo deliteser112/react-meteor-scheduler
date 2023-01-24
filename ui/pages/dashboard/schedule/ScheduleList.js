@@ -48,7 +48,14 @@ const TABLE_HEAD = [
 ];
 
 // ----------------------------------------------------------------------
-export default function ScheduleList({ scheduleList, isLoading, onDelete, onPreviewSchedule, isAdmin }) {
+export default function ScheduleList({
+  scheduleList,
+  isLoading,
+  onDelete,
+  onPreviewSchedule,
+  onPublishSchedule,
+  isAdmin
+}) {
   const {
     dense,
     page,
@@ -169,6 +176,7 @@ export default function ScheduleList({ scheduleList, isLoading, onDelete, onPrev
                       onSelectRow={() => onSelectRow(row._id)}
                       onDeleteRow={() => handleDeleteRow(row._id)}
                       onEditRow={() => handleEditRow(row._id)}
+                      onPublishSchedule={() => onPublishSchedule(row._id)}
                       onPreviewSchedule={(_id) => onPreviewSchedule(_id)}
                     />
                   ) : (
@@ -210,7 +218,8 @@ ScheduleList.propTypes = {
   isLoading: PropTypes.bool,
   scheduleList: PropTypes.array,
   onDelete: PropTypes.func,
-  onPreviewSchedule: PropTypes.func
+  onPreviewSchedule: PropTypes.func,
+  onPublishSchedule: PropTypes.func
 };
 
 // ----------------------------------------------------------------------

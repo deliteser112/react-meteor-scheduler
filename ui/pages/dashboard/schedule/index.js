@@ -25,16 +25,22 @@ import SchedulePreviewDialog from './SchedulePreviewDialog';
 // sections
 import ScheduleList from './ScheduleList';
 
-// queries & mutations
+// queries
 import { user as userQuery } from '../../../_queries/Users.gql';
 import { locations as locationsQuery } from '../../../_queries/Locations.gql';
 import { schedules as schedulesQuery } from '../../../_queries/Schedules.gql';
-import { removeSchedule as removeScheduleMutation } from '../../../_mutations/Schedules.gql';
+
+// mutations
+import {
+  removeSchedule as removeScheduleMutation,
+  updateSchedule as updateScheduleMutation
+} from '../../../_mutations/Schedules.gql';
 // ----------------------------------------------------------------------
 
 export default function Schedule() {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [removeSchedule] = useMutation(removeScheduleMutation);
+  const [updateSchedule] = useMutation(updateScheduleMutation);
 
   const { user } = useAuth();
   const [isAdmin, setAdmin] = useState(false);
@@ -110,9 +116,36 @@ export default function Schedule() {
     });
   };
 
-  const handlePreviewTemplate = (_id) => {
+  const handlePreviewSchedule = (_id) => {
     setScheduleId(_id);
     setIsOpen(true);
+  };
+
+  const handlePublishSchedule = (_id) => {
+    const mutation = updateSchedule;
+
+    const scheduleToAddOrUpdate = {
+      _id,
+      state: 'Published'
+    };
+    console.log('Hello ID', scheduleToAddOrUpdate);
+
+    mutation({
+      variables: {
+        schedule: scheduleToAddOrUpdate
+      },
+      refetchQueries: [{ query: schedulesQuery }]
+    }).then(() => {
+      enqueueSnackbar('Published successfully!', {
+        variant: 'success',
+        autoHideDuration: 2500,
+        action: (key) => (
+          <IconButton size="small" onClick={() => closeSnackbar(key)}>
+            <Iconify icon="eva:close-outline" />
+          </IconButton>
+        )
+      });
+    });
   };
 
   return (
@@ -139,7 +172,8 @@ export default function Schedule() {
           isLoading={loading}
           scheduleList={scheduleList}
           onDelete={(id) => deleteSchedule(id)}
-          onPreviewSchedule={(_id) => handlePreviewTemplate(_id)}
+          onPreviewSchedule={(_id) => handlePreviewSchedule(_id)}
+          onPublishSchedule={(_id) => handlePublishSchedule(_id)}
           isAdmin={isAdmin}
         />
       </Container>
