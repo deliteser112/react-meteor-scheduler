@@ -48,6 +48,7 @@ export default function LoginForm() {
   const onSubmit = async (data) => {
     try {
       const { email, password } = data;
+      await new Promise((resolve) => setTimeout(resolve, 500));
       Meteor.loginWithPassword(email, password, function (error) {
         if (error) {
           setError('afterSubmit', { ...error, message: error.reason });

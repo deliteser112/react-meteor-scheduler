@@ -48,6 +48,7 @@ export default function RegisterForm() {
   const onSubmit = async (data) => {
     try {
       const { email, password, firstName, lastName } = data;
+      await new Promise((resolve) => setTimeout(resolve, 500));
       Accounts.createUser(
         {
           email,

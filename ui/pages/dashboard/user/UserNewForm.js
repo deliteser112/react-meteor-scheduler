@@ -77,6 +77,9 @@ export default function UserNewForm() {
           }
         }
       };
+
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
       mutation({
         variables: {
           user: userToAdd
@@ -126,9 +129,11 @@ export default function UserNewForm() {
           }}
         />
 
-        <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
-          Register
-        </LoadingButton>
+        <div>
+          <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+            Create User
+          </LoadingButton>
+        </div>
       </Stack>
     </FormProvider>
   );
