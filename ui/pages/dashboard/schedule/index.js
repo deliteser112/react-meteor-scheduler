@@ -89,7 +89,7 @@ export default function Schedule() {
           const newSchedules = [];
           newLocations.map((loc) => {
             const sche = schedules.find((sche) => sche.locationId === loc._id);
-            if (sche) newSchedules.push(sche);
+            if (sche && sche.state === 'Published') newSchedules.push(sche);
           });
           setScheduleList([...newSchedules]);
         }
@@ -121,14 +121,15 @@ export default function Schedule() {
     setIsOpen(true);
   };
 
-  const handlePublishSchedule = (_id) => {
+  const handlePublishSchedule = (_id, state) => {
     const mutation = updateSchedule;
+
+    const updateState = state === 'Published' ? 'Drafted' : 'Published';
 
     const scheduleToAddOrUpdate = {
       _id,
-      state: 'Published'
+      state: updateState
     };
-    console.log('Hello ID', scheduleToAddOrUpdate);
 
     mutation({
       variables: {
@@ -136,7 +137,7 @@ export default function Schedule() {
       },
       refetchQueries: [{ query: schedulesQuery }]
     }).then(() => {
-      enqueueSnackbar('Published successfully!', {
+      enqueueSnackbar(`${updateState} successfully!`, {
         variant: 'success',
         autoHideDuration: 2500,
         action: (key) => (
@@ -173,7 +174,7 @@ export default function Schedule() {
           scheduleList={scheduleList}
           onDelete={(id) => deleteSchedule(id)}
           onPreviewSchedule={(_id) => handlePreviewSchedule(_id)}
-          onPublishSchedule={(_id) => handlePublishSchedule(_id)}
+          onPublishSchedule={(_id, state) => handlePublishSchedule(_id, state)}
           isAdmin={isAdmin}
         />
       </Container>
