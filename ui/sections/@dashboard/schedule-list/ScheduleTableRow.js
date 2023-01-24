@@ -20,16 +20,26 @@ ScheduleTableRow.propTypes = {
   selected: PropTypes.bool,
   onSelectRow: PropTypes.func,
   onDeleteRow: PropTypes.func,
-  onPreviewSchedule: PropTypes.func
+  onPreviewSchedule: PropTypes.func,
+  onPublishSchedule: PropTypes.func
 };
 
-export default function ScheduleTableRow({ row, isAdmin, selected, onEditRow, onDeleteRow, onPreviewSchedule }) {
+export default function ScheduleTableRow({
+  row,
+  isAdmin,
+  selected,
+  onEditRow,
+  onDeleteRow,
+  onPreviewSchedule,
+  onPublishSchedule
+}) {
   const { _id, title, startDate, endDate, template, state, cover, createdAt } = row;
 
   const mockImageUrl = '/assets/document.png';
 
   const [openMenu, setOpenMenuActions] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [publishDialogOpen, setPublishDialogOpen] = useState(false);
 
   const handleDelete = () => {
     setDialogOpen(true);
@@ -38,6 +48,15 @@ export default function ScheduleTableRow({ row, isAdmin, selected, onEditRow, on
   const handleAgree = (isAgree) => {
     setDialogOpen(false);
     if (isAgree) onDeleteRow();
+  };
+
+  const handlePublish = () => {
+    setPublishDialogOpen(true);
+  };
+
+  const handlePublishAgree = (isAgree) => {
+    setPublishDialogOpen(false);
+    if (isAgree) onPublishSchedule();
   };
 
   const handleOpenMenu = (event) => {
@@ -56,6 +75,13 @@ export default function ScheduleTableRow({ row, isAdmin, selected, onEditRow, on
           isOpen={dialogOpen}
           title="Scheduler | Confirm"
           content="Are you sure to delete this item?"
+        />
+
+        <ConfirmDialog
+          onAgree={handlePublishAgree}
+          isOpen={publishDialogOpen}
+          title="Scheduler | Confirm"
+          content="Are you sure to publish this schedule?"
         />
         <Image
           disabledEffect
@@ -110,6 +136,17 @@ export default function ScheduleTableRow({ row, isAdmin, selected, onEditRow, on
                 >
                   <Iconify icon={'eva:edit-fill'} />
                   Edit
+                </MenuItem>
+
+                <MenuItem
+                  onClick={() => {
+                    handlePublish();
+                    handleCloseMenu();
+                  }}
+                  sx={{ color: 'info.main' }}
+                >
+                  <Iconify icon={'ic:baseline-published-with-changes'} />
+                  Publish Template
                 </MenuItem>
               </>
             }
