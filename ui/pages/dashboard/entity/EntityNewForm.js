@@ -84,6 +84,8 @@ export default function EntityNewForm({ isEdit, currentEntity }) {
         entityToAddOrUpdate._id = currentEntity._id;
       }
 
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      
       mutation({
         variables: {
           ...entityToAddOrUpdate

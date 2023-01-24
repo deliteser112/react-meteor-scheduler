@@ -98,6 +98,8 @@ export default function LocationNewForm({ isEdit, currentLocation, entities }) {
         locationToAddOrUpdate._id = currentLocation._id;
       }
 
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      
       mutation({
         variables: {
           ...locationToAddOrUpdate

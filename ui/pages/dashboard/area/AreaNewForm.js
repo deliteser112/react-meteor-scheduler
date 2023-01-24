@@ -85,6 +85,7 @@ export default function AreaNewForm({ isEdit, currentArea }) {
       if (isEdit) {
         areaToAddOrUpdate._id = currentArea._id;
       }
+      await new Promise((resolve) => setTimeout(resolve, 500));
 
       mutation({
         variables: {
