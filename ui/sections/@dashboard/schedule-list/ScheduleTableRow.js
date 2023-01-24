@@ -148,7 +148,7 @@ export default function ScheduleTableRow({
                   <Iconify
                     icon={state === 'Drafted' ? 'ic:baseline-published-with-changes' : 'fa-solid:drafting-compass'}
                   />
-                  {state === 'Published' ? 'Back to Drafted' : 'Publish Template'}
+                  {state === 'Published' ? 'Back to Drafted' : 'Publish Schedule'}
                 </MenuItem>
               </>
             }
